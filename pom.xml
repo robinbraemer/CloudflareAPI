@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>eu.roboflax.cloudflare</groupId>
+    <artifactId>cloudflare-parent</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+    <name>Cloudflare Maven Parent</name>
+    <url>https://github.com/RoboFlax/Cloudflare</url>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/RoboFlax/Cloudflare/issues</url>
+    </issueManagement>
+    <inceptionYear>2018</inceptionYear>
+    <prerequisites>
+        <maven>3.0.3</maven>
+    </prerequisites>
+    <scm>
+        <connection>scm:git:https://github.com/RoboFlax/Cloudflare.git</connection>
+        <developerConnection>scm:git:git@github.com:RoboFlax/Cloudflare.git</developerConnection>
+        <url>https://github.com/RoboFlax/Cloudflare</url>
+    </scm>
+    <developers>
+        <developer>
+            <id>RoboFlax</id>
+            <name>Robin Brämer</name>
+            <email>roboflax@gmail.com</email>
+            <roles>
+                <role>owner</role>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+    <modules>
+        <module>cloudflare</module>
+    </modules>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
