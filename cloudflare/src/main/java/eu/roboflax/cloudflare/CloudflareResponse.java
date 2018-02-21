@@ -15,6 +15,7 @@ import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.ArchUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,6 @@ public class CloudflareResponse {
     /**
      * If the request was successful.
      */
-    @Getter
     @SerializedName("success")
     private final boolean successful;
     
@@ -71,7 +71,7 @@ public class CloudflareResponse {
     }
     
     /**
-     * Get the result as json object.
+     * Get the "result" entry from the root as json object.
      *
      * @return the JsonObject
      */
@@ -80,7 +80,7 @@ public class CloudflareResponse {
     }
     
     /**
-     * Get the result as json array.
+     * Get the "result" entry from the root as json array.
      *
      * @return the JsonArray
      */
@@ -89,7 +89,7 @@ public class CloudflareResponse {
     }
     
     /**
-     * Get the result as an json element.
+     * Get the "result" entry from the root as an json element.
      *
      * @return the JsonElement
      */
@@ -98,7 +98,7 @@ public class CloudflareResponse {
     }
     
     /**
-     * Check if the result exists and is not null.
+     * Check if the "result" entry from the root exists and is not null.
      *
      * @return the JsonElement
      */
@@ -107,7 +107,18 @@ public class CloudflareResponse {
     }
     
     public JsonObject getRoot( ) {
-        return this.jsonObject;
+        return jsonObject;
+    }
+    
+    /**
+     * Check if the request was successful and
+     * the response contains the right output.
+     *
+     * Running isSuccessful() on the HttpResponse<CloudflareResponse> object would be enough.
+     * @return true if everything was successful
+     */
+    public boolean isSuccessful( ) {
+        return successful;
     }
     
     @Override

@@ -28,6 +28,9 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import static util.CloudflareUtils.buildObjectByIdMap;
+import static util.CloudflareUtils.isValidHttpResponse;
+
 public class UserService extends Service implements User {
     
     public UserService( CloudflareAccess cloudflareAccess ) {

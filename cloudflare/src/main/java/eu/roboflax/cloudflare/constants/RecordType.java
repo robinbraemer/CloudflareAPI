@@ -10,21 +10,21 @@ package eu.roboflax.cloudflare.constants;
 
 public enum RecordType {
     
-    IPV4Address( "A" ),
-    IPV6Address( "AAAA" ),
-    CanonicalName( "CNAME" ),
-    MailExchanger( "MX" ),
-    NameServer( "NS" ),
-    ServiceSupport( "SRV" ),
-    Text( "TXT" ),
-    Localisation( "LOC" ),
-    SenderPolicyFramework( "SPF" ),
-    CertificationAuthorityAuthorization( "CAA" );
+    A( "IPV4Address" ),
+    AAAA( "IPV6Address" ),
+    CNAME( "CanonicalName" ),
+    MX( "MailExchanger" ),
+    NS( "NameServer" ),
+    SRV( "ServiceSupport" ),
+    TXT( "Text" ),
+    LOC( "Localisation" ),
+    SPF( "SenderPolicyFramework" ),
+    CAA( "CertificationAuthorityAuthorization" );
     
     
-    public final String opt;
+    public final String name;
     
-    RecordType( String opt ) {
-        this.opt = opt;
+    RecordType( String name ) {
+        this.name = name;
     }
 }

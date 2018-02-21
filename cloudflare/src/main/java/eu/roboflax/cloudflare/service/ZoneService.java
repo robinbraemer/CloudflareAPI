@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import static util.CloudflareUtils.buildObjectByIdMap;
+import static util.CloudflareUtils.isValidHttpResponse;
+
 public class ZoneService extends Service implements eu.roboflax.cloudflare.query.Zone {
     
     public ZoneService( CloudflareAccess cloudflareAccess ) {

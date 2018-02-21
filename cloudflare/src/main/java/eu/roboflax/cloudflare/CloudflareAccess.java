@@ -42,24 +42,27 @@ public class CloudflareAccess implements Closeable {
     
     public static final String API_BASE_URL = "https://api.cloudflare.com/client/v4/";
     
-    public static final Gson gson = new GsonBuilder().setPrettyPrinting().registerTypeAdapter( ZoneSetting.class, new ZoneSettingDeserializer() ).create();
-    public static JsonParser jsonParser = new JsonParser();
+    public static final Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .registerTypeAdapter( ZoneSetting.class, new ZoneSettingDeserializer() )
+            .create();
+    public static final JsonParser jsonParser = new JsonParser();
     private static final GsonMapper mapper = new GsonMapper();
     
-    public static final Pattern keyPattern = Pattern.compile( "((?:[a-z][a-z0-9_]*))",
+    public static final Pattern X_AUTH_KEY_PATTERN = Pattern.compile( "((?:[a-z][a-z0-9_]*))",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL );
-    public static final Pattern emailPattern = Pattern.compile( "([\\w-+]+(?:\\.[\\w-+]+)*@(?:[\\w-]+\\.)+[a-zA-Z]{2,7})",
+    public static final Pattern X_AUTH_EMAIL_Pattern = Pattern.compile( "([\\w-+]+(?:\\.[\\w-+]+)*@(?:[\\w-]+\\.)+[a-zA-Z]{2,7})",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL );
     public static final Pattern domainPattern = Pattern.compile( "^([a-zA-Z0-9][\\\\-a-zA-Z0-9]*\\\\.)+[\\\\-a-zA-Z0-9]{2,20}$" );
     
     
-    public CloudflareAccess( String authKey, String authEmail, ExecutorService cachedThreadPool ) {
-        if ( !(authKey.length() == 37) || !(keyPattern.matcher( authKey ).matches()) )
+    public CloudflareAccess( String xAuthKey, String xAuthEmail, ExecutorService cachedThreadPool ) {
+        if ( !(xAuthKey.length() == 37) || !(X_AUTH_KEY_PATTERN.matcher( xAuthKey ).matches()) )
             throw new IllegalArgumentException( "Format of passed xAuthKey is invalid!" );
-        if ( !emailPattern.matcher( authEmail ).matches() )
+        if ( !X_AUTH_EMAIL_Pattern.matcher( xAuthEmail ).matches() )
             throw new IllegalArgumentException( "Format of passed xAuthEmail is invalid!" );
-        this.xAuthKey = authKey;
-        this.xAuthEmail = authEmail;
+        this.xAuthKey = xAuthKey;
+        this.xAuthEmail = xAuthEmail;
         this.threadPool = cachedThreadPool;
         this.httpClient = RestClient.builder()
                 .baseUrl( API_BASE_URL )
@@ -72,12 +75,12 @@ public class CloudflareAccess implements Closeable {
                 .build();
     }
     
-    public CloudflareAccess( String authKey, String authEmail, int maxThreads ) {
-        this( authKey, authEmail, Executors.newFixedThreadPool( maxThreads ) );
+    public CloudflareAccess( String xAuthKey, String xAuthEmail, int maxThreads ) {
+        this( xAuthKey, xAuthEmail, Executors.newFixedThreadPool( maxThreads ) );
     }
     
-    public CloudflareAccess( String authKey, String authEmail ) {
-        this( authKey, authEmail, null );
+    public CloudflareAccess( String xAuthKey, String xAuthEmail ) {
+        this( xAuthKey, xAuthEmail, null );
     }
     
     public ExecutorService getThreadPool( ) {
@@ -97,6 +100,19 @@ public class CloudflareAccess implements Closeable {
         if ( this.userService == null )
             this.userService = new UserService( this );
         return this.userService;
+    }
+    
+    
+    public static Gson getGson( ) {
+        return gson;
+    }
+    
+    public static JsonParser getJsonParser( ) {
+        return jsonParser;
+    }
+    
+    public static GsonMapper getMapper( ) {
+        return mapper;
     }
     
     @Override
