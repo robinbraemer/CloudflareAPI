@@ -6,7 +6,7 @@
     <parent>
         <groupId>eu.roboflax.cloudflare</groupId>
         <artifactId>cloudflare-parent</artifactId>
-        <version>1.0</version>
+        <version>LATEST</version>
     </parent>
     <artifactId>cloudflare</artifactId>
     <packaging>bundle</packaging>

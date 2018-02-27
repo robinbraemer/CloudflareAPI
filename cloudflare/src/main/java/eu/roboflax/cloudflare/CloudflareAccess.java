@@ -20,6 +20,7 @@ import io.joshworks.restclient.http.RestClient;
 import lombok.Getter;
 import org.apache.http.client.config.CookieSpecs;
 
+import javax.annotation.Nullable;
 import java.io.Closeable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,19 +52,19 @@ public class CloudflareAccess implements Closeable {
     
     public static final Pattern X_AUTH_KEY_PATTERN = Pattern.compile( "((?:[a-z][a-z0-9_]*))",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL );
-    public static final Pattern X_AUTH_EMAIL_Pattern = Pattern.compile( "([\\w-+]+(?:\\.[\\w-+]+)*@(?:[\\w-]+\\.)+[a-zA-Z]{2,7})",
+    public static final Pattern X_AUTH_EMAIL_PATTERN = Pattern.compile( "([\\w-+]+(?:\\.[\\w-+]+)*@(?:[\\w-]+\\.)+[a-zA-Z]{2,7})",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL );
     public static final Pattern domainPattern = Pattern.compile( "^([a-zA-Z0-9][\\\\-a-zA-Z0-9]*\\\\.)+[\\\\-a-zA-Z0-9]{2,20}$" );
     
     
-    public CloudflareAccess( String xAuthKey, String xAuthEmail, ExecutorService cachedThreadPool ) {
+    public CloudflareAccess( String xAuthKey, String xAuthEmail, @Nullable ExecutorService threadPool ) {
         if ( !(xAuthKey.length() == 37) || !(X_AUTH_KEY_PATTERN.matcher( xAuthKey ).matches()) )
             throw new IllegalArgumentException( "Format of passed xAuthKey is invalid!" );
-        if ( !X_AUTH_EMAIL_Pattern.matcher( xAuthEmail ).matches() )
+        if ( !X_AUTH_EMAIL_PATTERN.matcher( xAuthEmail ).matches() )
             throw new IllegalArgumentException( "Format of passed xAuthEmail is invalid!" );
         this.xAuthKey = xAuthKey;
         this.xAuthEmail = xAuthEmail;
-        this.threadPool = cachedThreadPool;
+        this.threadPool = threadPool;
         this.httpClient = RestClient.builder()
                 .baseUrl( API_BASE_URL )
                 .defaultHeader( "Content-Type", "application/json" )
@@ -81,6 +82,10 @@ public class CloudflareAccess implements Closeable {
     
     public CloudflareAccess( String xAuthKey, String xAuthEmail ) {
         this( xAuthKey, xAuthEmail, null );
+    }
+    
+    public CloudflareAccess( CloudflareConfig config ) {
+        this( config.getXAuthKey(), config.getXAuthEmail(), config.getThreadPool() );
     }
     
     public ExecutorService getThreadPool( ) {
