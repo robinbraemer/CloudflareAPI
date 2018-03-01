@@ -46,18 +46,17 @@ public class CloudflareAccess implements Closeable {
     public static final JsonParser jsonParser = new JsonParser();
     private static final GsonMapper mapper = new GsonMapper();
     
-    public static final Pattern X_AUTH_KEY_PATTERN = Pattern.compile( "((?:[a-z][a-z0-9_]*))",
+    /*public static final Pattern X_AUTH_KEY_PATTERN = Pattern.compile( "((?:[a-z][a-z0-9_]*))",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL );
     public static final Pattern X_AUTH_EMAIL_PATTERN = Pattern.compile( "([\\w-+]+(?:\\.[\\w-+]+)*@(?:[\\w-]+\\.)+[a-zA-Z]{2,7})",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL );
-    public static final Pattern domainPattern = Pattern.compile( "^([a-zA-Z0-9][\\\\-a-zA-Z0-9]*\\\\.)+[\\\\-a-zA-Z0-9]{2,20}$" );
-    
+    public static final Pattern domainPattern = Pattern.compile( "^([a-zA-Z0-9][\\\\-a-zA-Z0-9]*\\\\.)+[\\\\-a-zA-Z0-9]{2,20}$" );*/
     
     public CloudflareAccess( String xAuthKey, String xAuthEmail, @Nullable ExecutorService threadPool ) {
-        if ( !(xAuthKey.length() == 37) || !(X_AUTH_KEY_PATTERN.matcher( xAuthKey ).matches()) )
+        /*if ( !(xAuthKey.length() == 37) || !(X_AUTH_KEY_PATTERN.matcher( xAuthKey ).matches()) )
             throw new IllegalArgumentException( "Format of passed xAuthKey is invalid!" );
         if ( !X_AUTH_EMAIL_PATTERN.matcher( xAuthEmail ).matches() )
-            throw new IllegalArgumentException( "Format of passed xAuthEmail is invalid!" );
+            throw new IllegalArgumentException( "Format of passed xAuthEmail is invalid!" );*/
         this.xAuthKey = xAuthKey;
         this.xAuthEmail = xAuthEmail;
         this.threadPool = threadPool;
