@@ -1,7 +1,7 @@
 # Cloudflare: The Cloudflare - API/Library for Java
 
-This Cloudflare API/Library interacts with [Cloudflare's fast API v4](https://api.cloudflare.com/).
-It allows you to access every feature of Cloudflare's API _(even if it isn't added yet)_.
+This Cloudflare API/Library interacts with [Cloudflare's fast API v4](https://api.cloudflare.com/)
+and allows you to access every single feature _(even if it isn't added yet)_ of Cloudflare's API faster and much easier!
 
 ## Latest release
 To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the following:
