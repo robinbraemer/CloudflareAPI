@@ -14,6 +14,6 @@ public interface UserBilling {
     
     CompletableFuture<BillingProfile> getBillingProfile( );
     
-    CompletableFuture<Map<String, Billing>> getBillingHistory( Map<String, Object> optionalQueryParameters);
+    CompletableFuture<Map<String, Billing>> getBillingHistory( Map<String, Object> optionalQueryParameters );
     
 }

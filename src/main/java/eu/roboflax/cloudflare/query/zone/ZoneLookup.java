@@ -20,7 +20,7 @@ public interface ZoneLookup {
     
     CompletableFuture<Zone> getZone( String zoneId );
     
-    CompletableFuture<ZoneSetting> getSetting( String zoneId, Category setting);
+    CompletableFuture<ZoneSetting> getSetting( String zoneId, Category setting );
     
     CompletableFuture<Map<String, ZoneSetting>> getSettings( String zoneId );
 }

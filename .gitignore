@@ -7,5 +7,5 @@
 *.iml
 out
 gen
-/cloudflare/src/test/java/PrivateTests.java
-/cloudflare/target/
+/src/test/java/PrivateTests.java
+/target/

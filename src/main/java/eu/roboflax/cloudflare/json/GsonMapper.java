@@ -8,8 +8,7 @@ import eu.roboflax.cloudflare.CloudflareResponse;
 import io.joshworks.restclient.http.mapper.ObjectMapper;
 
 public class GsonMapper implements ObjectMapper {
-    
-    
+
     @Override
     public <T> T readValue( String value, Class<T> valueType ) {
         return (T) new CloudflareResponse( value );
