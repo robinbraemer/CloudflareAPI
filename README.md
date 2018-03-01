@@ -1,6 +1,6 @@
 # Cloudflare: The Cloudflare - API/Library for Java
 
-[![Build Status](https://travis-ci.org/RoboFlax/Cloudflare.svg?branch=master)](https://travis-ci.org/RoboFlax/Cloudflare)
+[![Build Status](https://travis-ci.org/RoboFlax/CloudflareAPI.svg?branch=master)](https://travis-ci.org/RoboFlax/CloudflareAPI)
 [![](https://jitpack.io/v/RoboFlax/Cloudflare.svg)](https://jitpack.io/#RoboFlax/Cloudflare)
 
 This Cloudflare API/Library interacts with [Cloudflare's fast API v4](https://api.cloudflare.com/)
