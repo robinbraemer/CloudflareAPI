@@ -6,7 +6,7 @@
     <groupId>eu.roboflax.cloudflare</groupId>
     <artifactId>cloudflare-parent</artifactId>
     <version>1.1</version>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>Cloudflare Maven Parent</name>
     <url>https://github.com/RoboFlax/Cloudflare</url>
     <licenses>
