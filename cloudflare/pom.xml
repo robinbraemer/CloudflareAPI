@@ -10,8 +10,6 @@
     </parent>
     <artifactId>cloudflare</artifactId>
     <packaging>bundle</packaging>
-    <name>CloudflareAPI</name>
-    <description>A Java Cloudflare API/Library.</description>
     <url>https://github.com/RoboFlax/Cloudflare</url>
     <build>
         <finalName>CloudflareAPI</finalName>
