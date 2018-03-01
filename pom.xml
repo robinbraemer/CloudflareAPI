@@ -7,8 +7,7 @@
     <artifactId>cloudflare-parent</artifactId>
     <version>1.1</version>
     <packaging>pom</packaging>
-    <name>Cloudflare - API/Library</name>
-    <description>A Java Cloudflare API/Library.</description>
+    <name>Guava Maven Parent</name>
     <url>https://github.com/RoboFlax/Cloudflare</url>
     <licenses>
         <license>
