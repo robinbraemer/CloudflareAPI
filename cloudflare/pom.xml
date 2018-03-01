@@ -8,6 +8,7 @@
         <artifactId>cloudflare-parent</artifactId>
         <version>1.1</version>
     </parent>
+    <packaging>jar</packaging>
     <artifactId>cloudflare</artifactId>
     <name>Cloudflare - API/Library</name>
     <description>A Java Cloudflare API/Library.</description>
