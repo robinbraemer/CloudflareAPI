@@ -14,7 +14,7 @@
     <description>A Java Cloudflare API/Library.</description>
     <url>https://github.com/RoboFlax/Cloudflare</url>
     <build>
-        <finalName>Cloudflare</finalName>
+        <finalName>CloudflareAPI</finalName>
         <defaultGoal>clean install</defaultGoal>
         <plugins>
             <plugin>

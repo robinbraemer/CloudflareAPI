@@ -1,4 +1,7 @@
-
+/*
+ * Copyright (c) RoboFlax. All rights reserved.
+ * Use is subject to license terms.
+ */
 package eu.roboflax.cloudflare.objects.accessrule;
 
 import com.google.gson.annotations.Expose;

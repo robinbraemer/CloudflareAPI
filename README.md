@@ -4,8 +4,36 @@ This Cloudflare API/Library interacts with [Cloudflare's fast API v4](https://ap
 It allows you to access every feature of Cloudflare's API _(even if it isn't added yet)_.
 
 ## Latest release
+To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the following:
 
-todo
+**Maven:**
+```xml
+<dependency>
+  <groupId>com.github.roboflax</groupId>
+  <artifactId>cloudflare</artifactId>
+  <version>1.1</version>
+</dependency>
+	
+<repositories>
+  <repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+```
+
+**Gradle:**
+```
+dependencies {
+  compile 'com.github.roboflax:cloudflare:1.1'
+}
+
+allprojects {
+  repositories {
+    maven { url 'https://jitpack.io' }
+  }
+}
+```
 
 ## Features
 - **able to access every corner of cloudflare's api**
@@ -33,4 +61,4 @@ cfAccess.userService()...
 - Our users' guide in the wiki, [Cloudflare - API/Library explained](https://github.com/RoboFlax/Cloudflare/wiki).
 
 ### Licensing
-Licensed under the MIT license. See the [LICENSE](LICENSE) file for details.
+Licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.

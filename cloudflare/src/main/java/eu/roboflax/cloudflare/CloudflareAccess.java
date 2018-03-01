@@ -1,10 +1,6 @@
 /*
  * Copyright (c) RoboFlax. All rights reserved.
  * Use is subject to license terms.
- *
- * Project Samples created by RoboFlax.
- * Class created on 20.12.2017 at 17:05.
- *
  */
 package eu.roboflax.cloudflare;
 

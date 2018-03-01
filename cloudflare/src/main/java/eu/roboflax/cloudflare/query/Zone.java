@@ -1,10 +1,6 @@
 /*
  * Copyright (c) RoboFlax. All rights reserved.
  * Use is subject to license terms.
- *
- * Project cloudflare created by RoboFlax.
- * Class created on 21.12.2017 at 16:04.
- *
  */
 package eu.roboflax.cloudflare.query;
 

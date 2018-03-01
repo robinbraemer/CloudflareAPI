@@ -1,10 +1,6 @@
 /*
  * Copyright (c) RoboFlax. All rights reserved.
  * Use is subject to license terms.
- *
- * Project cloudflare created by RoboFlax.
- * Class created on 21.12.2017 at 18:06.
- *
  */
 package eu.roboflax.cloudflare;
 
@@ -13,15 +9,17 @@ import com.google.gson.JsonObject;
 import eu.roboflax.cloudflare.constants.Category;
 import io.joshworks.restclient.http.HttpMethod;
 import io.joshworks.restclient.http.HttpResponse;
+import lombok.Getter;
 
 import java.util.*;
 import java.util.function.Consumer;
 
 import static io.joshworks.restclient.http.HttpMethod.*;
 
+@Getter
 public class CloudflareRequest {
     
-    private CloudflareAccess cfAccess;
+    private CloudflareAccess cloudflareAccess;
     
     private String additionalPath;
     private HttpMethod httpMethod;
@@ -31,16 +29,14 @@ public class CloudflareRequest {
     
     private JsonObject body = new JsonObject();
     
-    public CloudflareRequest( Category category, CloudflareAccess cloudflareAccess ) {
-        this.cfAccess = cloudflareAccess;
-        this.additionalPath = category.getPath();
-        this.httpMethod = category.getHttpMethod();
-    }
-    
     public CloudflareRequest( HttpMethod httpMethod, String additionalPath, CloudflareAccess cloudflareAccess ) {
-        this.cfAccess = cloudflareAccess;
+        this.cloudflareAccess = cloudflareAccess;
         this.httpMethod = httpMethod;
         this.additionalPath = additionalPath;
+    }
+    
+    public CloudflareRequest( Category category, CloudflareAccess cloudflareAccess ) {
+        this( category.getHttpMethod(), category.getPath(), cloudflareAccess );
     }
     
     public CloudflareRequest orderedIdentifiers( String... orderedIdentifiers ) {
@@ -75,14 +71,12 @@ public class CloudflareRequest {
         return this;
     }
     
-    
     public CloudflareRequest body( Map<String, Object> keyValues ) {
         if ( keyValues != null )
             for ( Map.Entry<String, Object> entry : keyValues.entrySet() )
                 body( entry.getKey(), entry.getValue() );
         return this;
     }
-    
     
     private String categoryPath( ) {
         String additionalCategoryPath = additionalPath;
@@ -93,34 +87,34 @@ public class CloudflareRequest {
     
     public <T> HttpResponse<T> send( Class<T> tClass ) {
         if ( GET.equals( httpMethod ) ) {
-            return cfAccess.getHttpClient()
+            return cloudflareAccess.getHttpClient()
                     .get( categoryPath() )
                     .queryString( queryStrings )
                     .asObject( tClass );
         }
         if ( POST.equals( httpMethod ) ) {
-            return cfAccess.getHttpClient()
+            return cloudflareAccess.getHttpClient()
                     .post( categoryPath() )
                     .queryString( queryStrings )
                     .body( body.toString() )
                     .asObject( tClass );
         }
         if ( DELETE.equals( httpMethod ) ) {
-            return cfAccess.getHttpClient()
+            return cloudflareAccess.getHttpClient()
                     .delete( categoryPath() )
                     .queryString( queryStrings )
                     .body( body.toString() )
                     .asObject( tClass );
         }
         if ( PUT.equals( httpMethod ) ) {
-            return cfAccess.getHttpClient()
+            return cloudflareAccess.getHttpClient()
                     .put( categoryPath() )
                     .queryString( queryStrings )
                     .body( body.toString() )
                     .asObject( tClass );
         }
         if ( PATCH.equals( httpMethod ) ) {
-            return cfAccess.getHttpClient()
+            return cloudflareAccess.getHttpClient()
                     .patch( categoryPath() )
                     .queryString( queryStrings )
                     .body( body.toString() )
@@ -138,6 +132,6 @@ public class CloudflareRequest {
     }
     
     public <T> void send( Consumer<HttpResponse<T>> consumer, Class<T> tClass ) {
-        consumer.accept( send(tClass) );
+        consumer.accept( send( tClass ) );
     }
 }
