@@ -4,6 +4,8 @@
  */
 package eu.roboflax.cloudflare.constants;
 
+import lombok.Getter;
+
 public enum RecordType {
     
     A( "IPV4Address" ),
@@ -17,10 +19,10 @@ public enum RecordType {
     SPF( "SenderPolicyFramework" ),
     CAA( "CertificationAuthorityAuthorization" );
     
+    @Getter
+    public final String fullName;
     
-    public final String name;
-    
-    RecordType( String name ) {
-        this.name = name;
+    RecordType( String fullName ) {
+        this.fullName = fullName;
     }
 }

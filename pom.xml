@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.roboflax.cloudflare</groupId>
     <artifactId>cloudflare</artifactId>
-    <version>1.2</version>
+    <version>1.2.1</version>
     <packaging>jar</packaging>
     <name>Cloudflare - API/Library</name>
     <description>A Java Cloudflare API/Library.</description>

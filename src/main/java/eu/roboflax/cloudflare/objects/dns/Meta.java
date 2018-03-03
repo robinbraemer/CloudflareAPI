@@ -12,10 +12,10 @@ public class Meta {
     
     @SerializedName("auto_added")
     @Expose
-    public Boolean autoAdded;
+    private Boolean autoAdded;
     @SerializedName("managed_by_apps")
     @Expose
-    public Boolean managedByApps;
+    private Boolean managedByApps;
     
     @Override
     public String toString( ) {

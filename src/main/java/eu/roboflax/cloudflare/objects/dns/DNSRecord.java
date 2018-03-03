@@ -16,43 +16,43 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class DNSRecord implements Identifiable {
     @SerializedName("id")
     @Expose
-    public String id;
+    private String id;
     @SerializedName("type")
     @Expose
-    public String type;
+    private String type;
     @SerializedName("name")
     @Expose
-    public String name;
+    private String name;
     @SerializedName("content")
     @Expose
-    public String content;
+    private String content;
     @SerializedName("proxiable")
     @Expose
-    public Boolean proxiable;
+    private Boolean proxiable;
     @SerializedName("proxied")
     @Expose
-    public Boolean proxied;
+    private Boolean proxied;
     @SerializedName("ttl")
     @Expose
-    public Integer ttl;
+    private Integer ttl;
     @SerializedName("locked")
     @Expose
-    public Boolean locked;
+    private Boolean locked;
     @SerializedName("zone_id")
     @Expose
-    public String zoneId;
+    private String zoneId;
     @SerializedName("zone_name")
     @Expose
-    public String zoneName;
+    private String zoneName;
     @SerializedName("modified_on")
     @Expose
-    public String modifiedOn;
+    private String modifiedOn;
     @SerializedName("created_on")
     @Expose
-    public String createdOn;
+    private String createdOn;
     @SerializedName("meta")
     @Expose
-    public Meta meta;
+    private Meta meta;
     
     @Override
     public String toString( ) {

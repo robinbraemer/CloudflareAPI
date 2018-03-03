@@ -11,6 +11,7 @@ import eu.roboflax.cloudflare.CloudflareRequest;
 import eu.roboflax.cloudflare.Pagination;
 import eu.roboflax.cloudflare.constants.Category;
 import eu.roboflax.cloudflare.constants.Match;
+import eu.roboflax.cloudflare.constants.RecordType;
 import eu.roboflax.cloudflare.objects.dns.DNSRecord;
 import eu.roboflax.cloudflare.query.DNS;
 
@@ -28,13 +29,13 @@ public class DNSRecordService extends Service implements DNS {
     }
     
     @Override
-    public CompletableFuture<DNSRecord> createDNSRecord( String zoneId, String type, String name, String content,
+    public CompletableFuture<DNSRecord> createDNSRecord( String zoneId, RecordType type, String name, String content,
                                                          @Nullable Integer ttl, @Nullable Boolean proxied ) {
         CompletableFuture<DNSRecord> future = new CompletableFuture<>();
         cloudflareAccess.getThreadPool().submit( ( ) ->
                 new CloudflareRequest( Category.CREATE_DNS_RECORD, cloudflareAccess )
                         .orderedIdentifiers( zoneId )
-                        .body( "type", type )
+                        .body( "type", type.name() )
                         .body( "content", content )
                         .body( "ttl", ttl )
                         .body( "proxied", proxied )
@@ -46,19 +47,19 @@ public class DNSRecordService extends Service implements DNS {
     }
     
     @Override
-    public CompletableFuture<DNSRecord> createDNSRecord( String zoneId, String type, String name, String content ) {
+    public CompletableFuture<DNSRecord> createDNSRecord( String zoneId, RecordType type, String name, String content ) {
         return createDNSRecord( zoneId, type, name, content, null, null );
     }
     
     @Override
-    public CompletableFuture<Map<String, DNSRecord>> listDNSRecords( String zoneId, @Nullable String type,
+    public CompletableFuture<Map<String, DNSRecord>> listDNSRecords( String zoneId, @Nullable RecordType type,
                                                                      @Nullable String name, @Nullable String content,
                                                                      @Nullable Match match, @Nullable Pagination pagination ) {
         CompletableFuture<Map<String, DNSRecord>> future = new CompletableFuture<>();
         cloudflareAccess.getThreadPool().submit( ( ) ->
                 new CloudflareRequest( Category.LIST_DNS_RECORDS, cloudflareAccess )
                         .orderedIdentifiers( zoneId )
-                        .queryString( "type", type )
+                        .queryString( "type", type != null ? type.name() : null )
                         .queryString( "name", name )
                         .queryString( "content", content )
                         .queryString( "match", match != null ? match.name().toLowerCase() : null )
@@ -101,13 +102,13 @@ public class DNSRecordService extends Service implements DNS {
     }
     
     @Override
-    public CompletableFuture<DNSRecord> updateDNSRecord( String zoneId, String recordId, String type, String name, String content,
+    public CompletableFuture<DNSRecord> updateDNSRecord( String zoneId, String recordId, RecordType type, String name, String content,
                                                          @Nullable Integer ttl, @Nullable Boolean proxied ) {
         CompletableFuture<DNSRecord> future = new CompletableFuture<>();
         cloudflareAccess.getThreadPool().submit( ( ) ->
                 new CloudflareRequest( Category.UPDATE_DNS_RECORD, cloudflareAccess )
                         .orderedIdentifiers( zoneId )
-                        .body( "type", type )
+                        .body( "type", type != null ? type.name() : null )
                         .body( "content", content )
                         .body( "ttl", ttl )
                         .body( "proxied", proxied )
@@ -119,7 +120,7 @@ public class DNSRecordService extends Service implements DNS {
     }
     
     @Override
-    public CompletableFuture<DNSRecord> updateDNSRecord( String zoneId, String recordId, String type, String name, String content ) {
+    public CompletableFuture<DNSRecord> updateDNSRecord( String zoneId, String recordId, RecordType type, String name, String content ) {
         return updateDNSRecord( zoneId, recordId, type, name, content, null, null );
     }
     

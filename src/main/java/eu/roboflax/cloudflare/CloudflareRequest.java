@@ -18,7 +18,6 @@ import static io.joshworks.restclient.http.HttpMethod.*;
 
 @Getter
 public class CloudflareRequest {
-    // todo implement a builder
     
     private CloudflareAccess cloudflareAccess;
     
