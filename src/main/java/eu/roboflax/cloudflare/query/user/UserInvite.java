@@ -4,7 +4,7 @@
  */
 package eu.roboflax.cloudflare.query.user;
 
-import eu.roboflax.cloudflare.constants.ParamValues;
+import eu.roboflax.cloudflare.constants.InvitationStatus;
 import eu.roboflax.cloudflare.objects.user.invite.Invite;
 
 import java.util.Map;
@@ -16,5 +16,5 @@ public interface UserInvite {
     
     CompletableFuture<Invite> getInvite( String inviteId );
     
-    CompletableFuture<Invite> setInviteStatus( String inviteId, ParamValues.Status status );
+    CompletableFuture<Invite> setInviteStatus( String inviteId, InvitationStatus status );
 }

@@ -4,7 +4,6 @@
  */
 package eu.roboflax.cloudflare.objects.user;
 
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import eu.roboflax.cloudflare.objects.Identifiable;

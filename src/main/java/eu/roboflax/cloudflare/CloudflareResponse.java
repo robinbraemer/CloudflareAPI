@@ -4,18 +4,19 @@
  */
 package eu.roboflax.cloudflare;
 
+import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
+import eu.roboflax.cloudflare.objects.ResultInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.ArchUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import static eu.roboflax.cloudflare.CloudflareAccess.gson;
 import static eu.roboflax.cloudflare.CloudflareAccess.jsonParser;
 
 public class CloudflareResponse {
@@ -23,7 +24,7 @@ public class CloudflareResponse {
     /**
      * The whole json object.
      */
-    private JsonObject jsonObject;
+    private final JsonObject jsonObject;
     
     /**
      * If the request was successful.
@@ -32,16 +33,19 @@ public class CloudflareResponse {
     private final boolean successful;
     
     /**
+     * Messages.
+     */
+    // todo how are they structured?
+    @Getter
+    private final List<String> messages = Lists.newArrayList();
+    
+    private ResultInfo resultInfo;
+    
+    /**
      * A list of errors.
      */
     @Getter
-    private List<CloudflareError> errors = new ArrayList<>(  );
-    
-    /**
-     * Messages.
-     */
-    @Getter
-    private List<String> messages = new ArrayList<>(  );
+    private final List<CloudflareError> errors = Lists.newArrayList();
     
     @AllArgsConstructor
     @NoArgsConstructor
@@ -55,7 +59,6 @@ public class CloudflareResponse {
         private String errorMessage;
     }
     
-    
     public CloudflareResponse( String json ) {
         if ( json == null || "".equals( json.trim() ) ) {
             jsonObject = new JsonObject();
@@ -63,6 +66,8 @@ public class CloudflareResponse {
         } else {
             jsonObject = jsonParser.parse( json ).getAsJsonObject();
             successful = getRoot().get( "success" ).getAsBoolean() && resultExists();
+            if ( isSuccessful() && getRoot().has( "result_info" ) )
+                resultInfo = gson.fromJson( getRoot().getAsJsonObject( "result_info" ), ResultInfo.class );
         }
     }
     
@@ -109,8 +114,9 @@ public class CloudflareResponse {
     /**
      * Check if the request was successful and
      * the response contains the right output.
-     *
+     * <p>
      * Running isSuccessful() on the HttpResponse<CloudflareResponse> object would be enough.
+     *
      * @return true if everything was successful
      */
     public boolean isSuccessful( ) {

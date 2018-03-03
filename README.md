@@ -14,7 +14,7 @@ To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the
 <dependency>
   <groupId>com.github.roboflax</groupId>
   <artifactId>cloudflare</artifactId>
-  <version>1.1</version>
+  <version>1.2</version>
 </dependency>
 	
 <repositories>

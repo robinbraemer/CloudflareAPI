@@ -18,6 +18,7 @@ import static io.joshworks.restclient.http.HttpMethod.*;
 
 @Getter
 public class CloudflareRequest {
+    // todo implement a builder
     
     private CloudflareAccess cloudflareAccess;
     
@@ -41,32 +42,32 @@ public class CloudflareRequest {
     
     public CloudflareRequest orderedIdentifiers( String... orderedIdentifiers ) {
         if ( orderedIdentifiers != null ) {
-            this.orderedIdentifiers.clear();
             Collections.addAll( this.orderedIdentifiers, orderedIdentifiers );
         }
         return this;
     }
     
     public CloudflareRequest queryString( String property, Object value ) {
-        if ( property != null && value != null )
+        if ( value != null && property != null )
             queryStrings.put( property, value );
         return this;
     }
     
     public CloudflareRequest queryString( Map<String, Object> keyValues ) {
         if ( keyValues != null )
-            queryStrings.putAll( keyValues );
+            for ( Map.Entry<String, Object> entry : keyValues.entrySet() )
+                queryString( entry.getKey(), entry.getValue() );
         return this;
     }
     
     public CloudflareRequest body( String property, Object value ) {
-        if ( property != null && value != null )
+        if ( value != null && property != null )
             body.addProperty( property, value.toString() );
         return this;
     }
     
     public CloudflareRequest body( String property, JsonElement value ) {
-        if ( property != null && value != null )
+        if ( value != null && property != null )
             body.add( property, value );
         return this;
     }
@@ -86,6 +87,11 @@ public class CloudflareRequest {
     }
     
     public <T> HttpResponse<T> send( Class<T> tClass ) {
+        System.out.println( "Sending HttpRequest:" );
+        System.out.println( "httpMethod: " + httpMethod );
+        System.out.println( "queryStrings: " + queryStrings );
+        System.out.println( "body: " + body );
+        System.out.println( "orderedIdentifiers: " + orderedIdentifiers );
         if ( GET.equals( httpMethod ) ) {
             return cloudflareAccess.getHttpClient()
                     .get( categoryPath() )

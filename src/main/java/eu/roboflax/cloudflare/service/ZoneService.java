@@ -9,7 +9,9 @@ import com.google.gson.JsonObject;
 import eu.roboflax.cloudflare.CloudflareAccess;
 import eu.roboflax.cloudflare.CloudflareRequest;
 import eu.roboflax.cloudflare.CloudflareResponse;
+import eu.roboflax.cloudflare.Pagination;
 import eu.roboflax.cloudflare.constants.Category;
+import eu.roboflax.cloudflare.constants.Match;
 import eu.roboflax.cloudflare.objects.zone.RatePlan;
 import eu.roboflax.cloudflare.objects.zone.Zone;
 import eu.roboflax.cloudflare.objects.zone.ZoneSetting;
@@ -65,11 +67,9 @@ public class ZoneService extends Service implements eu.roboflax.cloudflare.query
         cloudflareAccess.getThreadPool().submit( ( ) -> {
             HttpResponse<CloudflareResponse> http = new CloudflareRequest( Category.DELETE_ZONE, cloudflareAccess )
                     .orderedIdentifiers( zoneId ).send();
-            if ( isValidHttpResponse( http, future ) ) {
-                if ( http.getBody().getAsObject().has( "id" ) )
-                    future.complete( zoneId.equals( http.getBody().getAsObject().get( "id" ).getAsString() ) );
-                future.complete( false );
-            }
+            if ( isValidHttpResponse( http, future ) )
+                future.complete( http.getBody().getAsObject().has( "id" ) );
+            else future.complete( false );
         } );
         return future;
     }
@@ -180,30 +180,26 @@ public class ZoneService extends Service implements eu.roboflax.cloudflare.query
     }
     
     @Override
-    public CompletableFuture<Map<String, Zone>> getZones( ) {
+    public CompletableFuture<Map<String, Zone>> getZones( @Nullable String type, @Nullable String name, @Nullable String content,
+                                                          @Nullable Match match, @Nullable Pagination pagination ) {
         CompletableFuture<Map<String, Zone>> future = new CompletableFuture<>();
-        cloudflareAccess.getThreadPool().submit( ( ) -> {
-            try {
-                future.complete( getZones( null ).get() );
-            } catch ( InterruptedException e ) {
-                future.completeExceptionally( e );
-            } catch ( ExecutionException e ) {
-                future.completeExceptionally( e.getCause() );
-            }
-        } );
+        cloudflareAccess.getThreadPool().submit( ( ) ->
+                new CloudflareRequest( Category.LIST_ZONES, cloudflareAccess )
+                        .queryString( "type", type )
+                        .queryString( "name", name )
+                        .queryString( "content", content )
+                        .queryString( "match", match )
+                        .queryString( pagination != null ? pagination.getAsQueryStringsMap() : null )
+                        .send( (httpResponse -> {
+                            if ( isValidHttpResponse( httpResponse, future ) )
+                                future.complete( buildObjectByIdMap( httpResponse, Zone.class ) );
+                        }) ) );
         return future;
     }
     
     @Override
-    public CompletableFuture<Map<String, Zone>> getZones( Map<String, Object> optionalQueryParameters ) {
-        CompletableFuture<Map<String, Zone>> future = new CompletableFuture<>();
-        cloudflareAccess.getThreadPool().submit( ( ) -> {
-            HttpResponse<CloudflareResponse> http = new CloudflareRequest( Category.LIST_ZONES, cloudflareAccess )
-                    .queryString( optionalQueryParameters ).send();
-            if ( isValidHttpResponse( http, future ) )
-                future.complete( buildObjectByIdMap( http, Zone.class ) );
-        } );
-        return future;
+    public CompletableFuture<Map<String, Zone>> getZones( ) {
+        return getZones( null, null, null, null, null );
     }
     
     @Override

@@ -8,8 +8,11 @@ import com.google.gson.JsonObject;
 import eu.roboflax.cloudflare.CloudflareAccess;
 import eu.roboflax.cloudflare.CloudflareRequest;
 import eu.roboflax.cloudflare.CloudflareResponse;
+import eu.roboflax.cloudflare.Pagination;
 import eu.roboflax.cloudflare.constants.Category;
-import eu.roboflax.cloudflare.constants.ParamValues;
+import eu.roboflax.cloudflare.constants.Frequency;
+import eu.roboflax.cloudflare.constants.InvitationStatus;
+import eu.roboflax.cloudflare.constants.Mode;
 import eu.roboflax.cloudflare.objects.accessrule.AccessRule;
 import eu.roboflax.cloudflare.objects.user.UserDetails;
 import eu.roboflax.cloudflare.objects.user.UserOrganization;
@@ -20,6 +23,7 @@ import eu.roboflax.cloudflare.objects.user.subscription.Subscription;
 import eu.roboflax.cloudflare.query.User;
 import io.joshworks.restclient.http.HttpResponse;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -36,11 +40,11 @@ public class UserService extends Service implements User {
     @Override
     public CompletableFuture<UserDetails> getUserDetails( ) {
         CompletableFuture<UserDetails> future = new CompletableFuture<>();
-        cloudflareAccess.getThreadPool().submit( ( ) -> {
-            HttpResponse<CloudflareResponse> http = new CloudflareRequest( Category.USER_DETAILS, cloudflareAccess ).send();
-            if ( isValidHttpResponse( http, future ) )
-                future.complete( gson.fromJson( http.getBody().getAsObject(), UserDetails.class ) );
-        } );
+        cloudflareAccess.getThreadPool().submit( ( ) ->
+                new CloudflareRequest( Category.USER_DETAILS, cloudflareAccess ).send( ( httpResponse ) -> {
+                    if ( isValidHttpResponse( httpResponse, future ) )
+                        future.complete( gson.fromJson( httpResponse.getBody().getAsObject(), UserDetails.class ) );
+                } ) );
         return future;
     }
     
@@ -57,14 +61,21 @@ public class UserService extends Service implements User {
     }
     
     @Override
-    public CompletableFuture<Map<String, Subscription>> getSubscriptions( ) {
+    public CompletableFuture<Map<String, Subscription>> getSubscriptions( @Nullable Pagination pagination ) {
         CompletableFuture<Map<String, Subscription>> future = new CompletableFuture<>();
-        cloudflareAccess.getThreadPool().submit( ( ) -> {
-            HttpResponse<CloudflareResponse> http = new CloudflareRequest( Category.USER_SUBSCRIPTION, cloudflareAccess ).send();
-            if ( isValidHttpResponse( http, future ) )
-                future.complete( buildObjectByIdMap( http, Subscription.class ) );
-        } );
+        cloudflareAccess.getThreadPool().submit( ( ) ->
+                new CloudflareRequest( Category.USER_SUBSCRIPTION, cloudflareAccess )
+                        .queryString( pagination != null ? pagination.getAsQueryStringsMap() : null )
+                        .send( ( httpResponse ) -> {
+                            if ( isValidHttpResponse( httpResponse, future ) )
+                                future.complete( buildObjectByIdMap( httpResponse, Subscription.class ) );
+                        } ) );
         return future;
+    }
+    
+    @Override
+    public CompletableFuture<Map<String, Subscription>> getSubscriptions( ) {
+        return getSubscriptions( null );
     }
     
     @Override
@@ -83,7 +94,7 @@ public class UserService extends Service implements User {
     }
     
     @Override
-    public CompletableFuture<Subscription> updateSubscription( String subscriptionId, int price, String currency, ParamValues.Frequency frequency, Map<String, Object> optionalParameters ) {
+    public CompletableFuture<Subscription> updateSubscription( String subscriptionId, int price, String currency, Frequency frequency, Map<String, Object> optionalParameters ) {
         CompletableFuture<Subscription> future = new CompletableFuture<>();
         cloudflareAccess.getThreadPool().submit( ( ) -> {
             HttpResponse<CloudflareResponse> http = new CloudflareRequest( Category.UPDATE_USER_SUBSCRIPTION, cloudflareAccess )
@@ -177,7 +188,7 @@ public class UserService extends Service implements User {
     }
     
     @Override
-    public CompletableFuture<AccessRule> createAccessRule( ParamValues.Mode mode, String target, String value, String notes ) {
+    public CompletableFuture<AccessRule> createAccessRule( Mode mode, String target, String value, String notes ) {
         CompletableFuture<AccessRule> future = new CompletableFuture<>();
         cloudflareAccess.getThreadPool().submit( ( ) -> {
             JsonObject configuration = new JsonObject();
@@ -195,7 +206,7 @@ public class UserService extends Service implements User {
     }
     
     @Override
-    public CompletableFuture<AccessRule> createAccessRule( ParamValues.Mode mode, String target, String value ) {
+    public CompletableFuture<AccessRule> createAccessRule( Mode mode, String target, String value ) {
         CompletableFuture<AccessRule> future = new CompletableFuture<>();
         cloudflareAccess.getThreadPool().submit( ( ) -> {
             try {
@@ -210,7 +221,7 @@ public class UserService extends Service implements User {
     }
     
     @Override
-    public CompletableFuture<AccessRule> updateAccessRule( String accessRuleId, ParamValues.Mode mode, String notes ) {
+    public CompletableFuture<AccessRule> updateAccessRule( String accessRuleId, Mode mode, String notes ) {
         CompletableFuture<AccessRule> future = new CompletableFuture<>();
         cloudflareAccess.getThreadPool().submit( ( ) -> {
             HttpResponse<CloudflareResponse> http = new CloudflareRequest( Category.UPDATE_USER_ACCESS_RULE, cloudflareAccess )
@@ -240,7 +251,7 @@ public class UserService extends Service implements User {
     }
     
     @Override
-    public CompletableFuture<AccessRule> updateAccessRule( String accessRuleId, ParamValues.Mode mode ) {
+    public CompletableFuture<AccessRule> updateAccessRule( String accessRuleId, Mode mode ) {
         CompletableFuture<AccessRule> future = new CompletableFuture<>();
         cloudflareAccess.getThreadPool().submit( ( ) -> {
             try {
@@ -347,7 +358,7 @@ public class UserService extends Service implements User {
     }
     
     @Override
-    public CompletableFuture<Invite> setInviteStatus( String inviteId, ParamValues.Status status ) {
+    public CompletableFuture<Invite> setInviteStatus( String inviteId, InvitationStatus status ) {
         CompletableFuture<Invite> future = new CompletableFuture<>();
         cloudflareAccess.getThreadPool().submit( ( ) -> {
             HttpResponse<CloudflareResponse> http = new CloudflareRequest( Category.USER_RESPOND_INVITATION, cloudflareAccess )

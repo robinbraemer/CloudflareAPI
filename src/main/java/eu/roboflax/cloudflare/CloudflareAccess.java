@@ -10,6 +10,7 @@ import com.google.gson.JsonParser;
 import eu.roboflax.cloudflare.json.GsonMapper;
 import eu.roboflax.cloudflare.json.ZoneSettingDeserializer;
 import eu.roboflax.cloudflare.objects.zone.ZoneSetting;
+import eu.roboflax.cloudflare.service.DNSRecordService;
 import eu.roboflax.cloudflare.service.UserService;
 import eu.roboflax.cloudflare.service.ZoneService;
 import io.joshworks.restclient.http.RestClient;
@@ -21,7 +22,6 @@ import java.io.Closeable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 public class CloudflareAccess implements Closeable {
     
@@ -36,6 +36,7 @@ public class CloudflareAccess implements Closeable {
     
     private ZoneService zoneService;
     private UserService userService;
+    private DNSRecordService dnsRecordService;
     
     public static final String API_BASE_URL = "https://api.cloudflare.com/client/v4/";
     
@@ -100,6 +101,11 @@ public class CloudflareAccess implements Closeable {
         if ( this.userService == null )
             this.userService = new UserService( this );
         return this.userService;
+    }
+    public DNSRecordService dnsRecordService( ) {
+        if ( this.dnsRecordService == null )
+            this.dnsRecordService = new DNSRecordService( this );
+        return this.dnsRecordService;
     }
     
     
