@@ -29,18 +29,22 @@ public class CloudflareRequest {
     
     private JsonObject body = new JsonObject();
     
+    // todo add parameter to build methods
     public CloudflareRequest( HttpMethod httpMethod, String additionalPath, CloudflareAccess cloudflareAccess ) {
         this.cloudflareAccess = cloudflareAccess;
         this.httpMethod = httpMethod;
         this.additionalPath = additionalPath;
     }
     
+    // todo add parameter to build methods
     public CloudflareRequest( Category category, CloudflareAccess cloudflareAccess ) {
         this( category.getHttpMethod(), category.getPath(), cloudflareAccess );
     }
     
     public CloudflareRequest orderedIdentifiers( String... orderedIdentifiers ) {
         if ( orderedIdentifiers != null ) {
+            if ( Arrays.asList( orderedIdentifiers ).contains( null ) )
+                throw new NullPointerException( "No null references allowed as identifier in a CloudflareRequest" );
             Collections.addAll( this.orderedIdentifiers, orderedIdentifiers );
         }
         return this;

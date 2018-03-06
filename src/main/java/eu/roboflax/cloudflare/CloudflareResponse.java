@@ -68,6 +68,11 @@ public class CloudflareResponse {
             successful = getRoot().get( "success" ).getAsBoolean() && resultExists();
             if ( isSuccessful() && getRoot().has( "result_info" ) )
                 resultInfo = gson.fromJson( getRoot().getAsJsonObject( "result_info" ), ResultInfo.class );
+            JsonObject o;
+            for ( JsonElement e : getRoot().getAsJsonArray( "errors" ) ) {
+                o = e.getAsJsonObject();
+                getErrors().add( new CloudflareError( o.get( "code" ).getAsInt(), o.get( "message" ).getAsString() ) );
+            }
         }
     }
     

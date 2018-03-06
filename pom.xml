@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.roboflax.cloudflare</groupId>
     <artifactId>cloudflare</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
     <packaging>jar</packaging>
     <name>Cloudflare - API/Library</name>
     <description>A Java Cloudflare API/Library.</description>
@@ -21,6 +21,10 @@
         <system>GitHub Issues</system>
         <url>https://github.com/RoboFlax/Cloudflare/issues</url>
     </issueManagement>
+    <ciManagement>
+        <system>Travis CI</system>
+        <url>https://travis-ci.org/RoboFlax/CloudflareAPI</url>
+    </ciManagement>
     <inceptionYear>2018</inceptionYear>
     <prerequisites>
         <maven>3.0.3</maven>
