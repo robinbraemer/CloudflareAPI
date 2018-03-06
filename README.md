@@ -14,8 +14,8 @@ To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the
 ```xml
 <dependency>
   <groupId>com.github.roboflax</groupId>
-  <artifactId>cloudflare</artifactId>
-  <version>1.2.1</version>
+  <artifactId>cloudflareapi</artifactId>
+  <version>1.2.2</version>
 </dependency>
 	
 <repositories>
@@ -29,7 +29,7 @@ To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the
 **Gradle:**
 ```
 dependencies {
-  compile 'com.github.roboflax:cloudflare:1.1'
+  compile 'com.github.roboflax:cloudflareapi:1.2.2'
 }
 
 allprojects {
@@ -43,7 +43,7 @@ allprojects {
 - **able to access every corner of cloudflare's api**
 - **implemented services which simplifies a cloudflare request (+async)**
 - **object oriented representation of the cloudflare api** (60%)
-- **it is an extremely flexible and stable api**
+- **it is an extremely flexible api**
 
 ## Getting Started
 First, create an entry-point to use this api.

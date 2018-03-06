@@ -86,11 +86,6 @@ public class CloudflareRequest {
     }
     
     public <T> HttpResponse<T> send( Class<T> tClass ) {
-        System.out.println( "Sending HttpRequest:" );
-        System.out.println( "httpMethod: " + httpMethod );
-        System.out.println( "queryStrings: " + queryStrings );
-        System.out.println( "body: " + body );
-        System.out.println( "orderedIdentifiers: " + orderedIdentifiers );
         if ( GET.equals( httpMethod ) ) {
             return cloudflareAccess.getHttpClient()
                     .get( categoryPath() )
