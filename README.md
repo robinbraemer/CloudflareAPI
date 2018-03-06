@@ -81,4 +81,4 @@ Licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for detai
 [gitter-img]: https://badges.gitter.im/Join%20Chat.svg
 
 [license-url]: https://github.com/RoboFlax/CloudflareAPI/blob/master/LICENSE
-[license-img]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
+[license-img]: https://img.shields.io/badge/license-Apache_2.0-blue.svg?style=flat
