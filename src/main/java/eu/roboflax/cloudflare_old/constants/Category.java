@@ -2,9 +2,8 @@
  * Copyright (c) RoboFlax. All rights reserved.
  * Use is subject to license terms.
  */
-package eu.roboflax.cloudflare.constants;
+package eu.roboflax.cloudflare_old.constants;
 
-import eu.roboflax.cloudflare.CloudflareAccess;
 import io.joshworks.restclient.http.HttpMethod;
 
 import static io.joshworks.restclient.http.HttpMethod.*;
@@ -371,23 +370,19 @@ public enum Category {
     LIST_USER_AUDIT_LOGS( GET, "user/audit_logs" ),
     LIST_ORGANIZATION_AUDIT_LOGS( GET, "organizations/audit_logs" );
     
-    private HttpMethod httpMethod;
-    private String additionalPath;
+    HttpMethod httpMethod;
+    String path;
     
-    Category( HttpMethod httpMethod, String additionalPath ) {
+    Category( HttpMethod httpMethod, String path ) {
         this.httpMethod = httpMethod;
-        this.additionalPath = additionalPath;
+        this.path = path;
     }
     
     public HttpMethod getHttpMethod( ) {
-        return httpMethod;
-    }
-    
-    public String getAdditionalPath( ) {
-        return additionalPath;
+        return this.httpMethod;
     }
     
     public String getPath( ) {
-        return CloudflareAccess.API_BASE_URL + additionalPath;
+        return this.path;
     }
 }

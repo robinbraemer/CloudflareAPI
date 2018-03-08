@@ -4,132 +4,85 @@
  */
 package eu.roboflax.cloudflare;
 
-import com.google.common.collect.Lists;
-import com.google.gson.JsonArray;
+import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
 import eu.roboflax.cloudflare.objects.ResultInfo;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
-import static eu.roboflax.cloudflare.CloudflareAccess.gson;
-import static eu.roboflax.cloudflare.CloudflareAccess.jsonParser;
-
-public class CloudflareResponse {
+public class CloudflareResponse<T> {
     
     /**
      * The whole json object.
+     * Is null when failed.
      */
-    private final JsonObject jsonObject;
+    @Getter
+    private final JsonObject json;
+    
+    /**
+     * The result parsed as the given type.
+     */
+    @Getter
+    private final T object;
     
     /**
      * If the request was successful.
      */
-    @SerializedName("success")
+    @Getter
     private final boolean successful;
+    
+    /**
+     * The returned status code
+     */
+    @Getter
+    private final int statusCode;
+    
+    /**
+     * The returned status text
+     */
+    @Getter
+    private final String statusText;
     
     /**
      * Messages.
      */
-    // todo how are they structured?
     @Getter
-    private final List<String> messages = Lists.newArrayList();
-    
-    private ResultInfo resultInfo;
+    private final List<String> messages;
     
     /**
-     * A list of errors.
+     * A list of errors -> error message by error code.
      */
     @Getter
-    private final List<CloudflareError> errors = Lists.newArrayList();
+    private final Map<Integer, String> errors;
     
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    public class CloudflareError {
-        
-        @SerializedName("code")
-        private int errorCode;
-        
-        @SerializedName("message")
-        private String errorMessage;
-    }
+    /**
+     * Some infos about the returned result regarding the pagination.
+     */
+    private final ResultInfo resultInfo;
     
-    public CloudflareResponse( String json ) {
-        if ( json == null || "".equals( json.trim() ) ) {
-            jsonObject = new JsonObject();
-            successful = false;
-        } else {
-            jsonObject = jsonParser.parse( json ).getAsJsonObject();
-            successful = getRoot().get( "success" ).getAsBoolean() && resultExists();
-            if ( isSuccessful() && getRoot().has( "result_info" ) )
-                resultInfo = gson.fromJson( getRoot().getAsJsonObject( "result_info" ), ResultInfo.class );
-            JsonObject o;
-            for ( JsonElement e : getRoot().getAsJsonArray( "errors" ) ) {
-                o = e.getAsJsonObject();
-                getErrors().add( new CloudflareError( o.get( "code" ).getAsInt(), o.get( "message" ).getAsString() ) );
-            }
+    CloudflareResponse( JsonObject json, T object, boolean successful, int statusCode, String statusText ) {
+        this.messages = null; // todo how is their structure?
+        this.json = json;
+        this.successful = successful;
+        this.statusCode = statusCode;
+        this.statusText = statusText;
+        
+        // Errors
+        errors = Maps.newHashMap();
+        JsonObject o;
+        for ( JsonElement e : getJson().getAsJsonArray( "errors" ) ) {
+            o = e.getAsJsonObject();
+            errors.put( o.get( "code" ).getAsInt(), o.get( "message" ).getAsString() );
         }
-    }
-    
-    /**
-     * Get the "result" entry from the root as json object.
-     *
-     * @return the JsonObject
-     */
-    public JsonObject getAsObject( ) {
-        return getRoot().getAsJsonObject( "result" );
-    }
-    
-    /**
-     * Get the "result" entry from the root as json array.
-     *
-     * @return the JsonArray
-     */
-    public JsonArray getAsArray( ) {
-        return getRoot().getAsJsonArray( "result" );
-    }
-    
-    /**
-     * Get the "result" entry from the root as an json element.
-     *
-     * @return the JsonElement
-     */
-    public JsonElement getAsElement( ) {
-        return getRoot().get( "result" );
-    }
-    
-    /**
-     * Check if the "result" entry from the root exists and is not null.
-     *
-     * @return the JsonElement
-     */
-    public boolean resultExists( ) {
-        return getRoot().has( "result" ) && getAsElement() != null;
-    }
-    
-    public JsonObject getRoot( ) {
-        return jsonObject;
-    }
-    
-    /**
-     * Check if the request was successful and
-     * the response contains the right output.
-     * <p>
-     * Running isSuccessful() on the HttpResponse<CloudflareResponse> object would be enough.
-     *
-     * @return true if everything was successful
-     */
-    public boolean isSuccessful( ) {
-        return successful;
-    }
-    
-    @Override
-    public String toString( ) {
-        return getRoot().toString();
+        
+        // Pagination infos
+        if(getJson().has( "result_info" ))
+            resultInfo = CloudflareAccess.getGson().fromJson( getJson().getAsJsonObject( "result_info" ), ResultInfo.class );
+        else resultInfo = null;
+        
+        this.object = object;
     }
 }

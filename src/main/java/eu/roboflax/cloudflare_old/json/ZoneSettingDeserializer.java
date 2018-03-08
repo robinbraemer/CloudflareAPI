@@ -2,7 +2,7 @@
  * Copyright (c) RoboFlax. All rights reserved.
  * Use is subject to license terms.
  */
-package eu.roboflax.cloudflare.json;
+package eu.roboflax.cloudflare_old.json;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

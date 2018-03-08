@@ -2,7 +2,7 @@
  * Copyright (c) RoboFlax. All rights reserved.
  * Use is subject to license terms.
  */
-package eu.roboflax.cloudflare;
+package eu.roboflax.cloudflare_old;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,4 +29,3 @@ public class CloudflareConfig {
         this.threadPool = threadPool;
     }
 }
-
