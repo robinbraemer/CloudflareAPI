@@ -4,9 +4,11 @@
  */
 package eu.roboflax.cloudflare;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -16,16 +18,22 @@ import io.joshworks.restclient.http.HttpMethod;
 import io.joshworks.restclient.http.HttpResponse;
 import lombok.Getter;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.joshworks.restclient.http.HttpMethod.*;
 
+/**
+ * Used for creating cloudflare requests.
+ */
 public class CloudflareRequest {
     
     @Getter
@@ -37,15 +45,22 @@ public class CloudflareRequest {
     private Map<String, Object> queryStrings = Maps.newHashMap();
     private JsonObject body = new JsonObject();
     
-    private static final Set<HttpMethod> ALLOWED_HTTP_METHODS = Sets.newHashSet( GET, POST, PUT, DELETE, PATCH );
+    private Pair<HttpResponse<String>, JsonObject> response;
     
-    private static final String ERROR_INVALID_BODY = "invalid body";
-    private static final String ERROR_INVALID_QUERY_STRING = "invalid query string";
-    private static final String ERROR_INVALID_IDENTIFIER = "invalid identifier";
     
-    private static final String ERROR_RESULT_IS_JSON_OBJECT = "Property 'result' is not a json array, because it is a json object use asObject() instead of asObjectList().";
-    private static final String ERROR_RESULT_IS_JSON_ARRAY = "Property 'result' is not a json object, because it is a json array use asObjectList() instead of asObject().";
-    private static final String ERROR_RESULT_IS_JSON_NULL = "Something went wrong! Property 'result' is a json null.";
+    public static final Set<HttpMethod> ALLOWED_HTTP_METHODS = ImmutableSet.of( GET, POST, PUT, DELETE, PATCH );
+    
+    public static final String ERROR_INVALID_BODY = "invalid body";
+    public static final String ERROR_INVALID_QUERY_STRING = "invalid query string";
+    public static final String ERROR_INVALID_IDENTIFIER = "invalid identifier";
+    public static final String ERROR_INVALID_PAGINATION = "invalid pagination";
+    
+    public static final String ERROR_RESULT_IS_JSON_OBJECT = "Property 'result' is not a json array, because it is a json object use asObject() instead of asObjectList().";
+    public static final String ERROR_RESULT_IS_JSON_ARRAY = "Property 'result' is not a json object, because it is a json array use asObjectList() instead of asObject().";
+    public static final String ERROR_RESULT_IS_JSON_NULL = "Something went wrong! Property 'result' is a json null.";
+    
+    public static final String ERROR_CLOUDFLARE_FAILURE = "Cloudflare was unable to determine the result of the requested information. " +
+            "The http request still was successful, you can use .getJson() to retrieve further information.";
     
     
     public CloudflareRequest( HttpMethod httpMethod, CloudflareAccess cloudflareAccess ) {
@@ -134,6 +149,11 @@ public class CloudflareRequest {
         return this;
     }
     
+    public CloudflareRequest pagination( Pagination pagination ) {
+        queryString( checkNotNull( pagination, ERROR_INVALID_PAGINATION ).getAsQueryStringsMap() );
+        return this;
+    }
+    
     private HttpResponse<String> sendRequest( ) {
         if ( GET.equals( httpMethod ) ) {
             return cloudflareAccess.getRestClient()
@@ -165,17 +185,39 @@ public class CloudflareRequest {
                     .body( body.toString() )
                     .asString();
         }
-        throw new IllegalStateException( "should never happen" );
+        throw new IllegalStateException( "Should never happen because other http methods are blocked." );
     }
     
+    private Pair<HttpResponse<String>, JsonObject> response( ) {
+        if ( response == null ) {
+            HttpResponse<String> httpResponse = sendRequest();
+            JsonObject json = new JsonParser().parse( httpResponse.getBody() ).getAsJsonObject();
+            response = Pair.of( httpResponse, json );
+        }
+        return response;
+    }
+    
+    /*
+     * asNull
+     * asNull
+     * asNull
+     * asNull
+     * asNull
+     * asNull
+     * asNull
+     * asNull
+     * asNull
+     * asNull
+     */
+    
     /**
-     * Sends request. No object mapping and/or object parsing.
+     * Sends request. No object mapping and/or object parsing will be handled.
      *
      * @return CloudflareResponse<ObjectUtils.Null>
      */
     public CloudflareResponse<ObjectUtils.Null> asNull( ) {
-        HttpResponse<String> httpResponse = sendRequest();
-        JsonObject json = new JsonParser().parse( httpResponse.getBody() ).getAsJsonObject();
+        HttpResponse<String> httpResponse = response().getLeft();
+        JsonObject json = response().getRight();
         return new CloudflareResponse<>(
                 json,
                 ObjectUtils.NULL,
@@ -186,86 +228,78 @@ public class CloudflareRequest {
     }
     
     /**
-     * Consumer method for:
-     * <p>
-     * {@link CloudflareRequest#asNull()}
+     * Consumer method for: {@link CloudflareRequest#asNull()}
      */
-    public CloudflareResponse<ObjectUtils.Null> asNull( Consumer<CloudflareResponse<ObjectUtils.Null>> consumer ) {
-        CloudflareResponse<ObjectUtils.Null> response = asNull();
-        consumer.accept( response );
-        return response;
+    public void asNull( Consumer<CloudflareResponse<ObjectUtils.Null>> consumer ) {
+        consumer.accept( asNull() );
     }
     
     /**
-     * Async method for:
-     * <p>
-     * {@link CloudflareRequest#asNull()}
+     * Async CloudflareCallback method for {@link CloudflareRequest#asNull()}
+     */
+    public void asNullAsync( CloudflareCallback<CloudflareResponse<ObjectUtils.Null>> callback ) {
+        asyncCallback( callback, this::asNull );
+    }
+    
+    
+    /**
+     * Async method for {@link CloudflareRequest#asNull()}
      */
     public CompletableFuture<CloudflareResponse<ObjectUtils.Null>> asNullAsync( ) {
         return CompletableFuture.supplyAsync( this::asNull, getCloudflareAccess().getThreadPool() );
     }
     
     /**
-     * Async consumer method for:
-     * <p>
-     * {@link CloudflareRequest#asNull()}
-     */
-    public CompletableFuture<CloudflareResponse<ObjectUtils.Null>> asNullAsync( Consumer<CompletableFuture<CloudflareResponse<ObjectUtils.Null>>> consumer ) {
-        CompletableFuture<CloudflareResponse<ObjectUtils.Null>> future = asNullAsync();
-        consumer.accept( future );
-        return future;
-    }
-    
-    /**
-     * Same as:
-     * <p>
-     * {@link CloudflareRequest#asNull()}
+     * Same as {@link CloudflareRequest#asNull()}
      */
     public CloudflareResponse<ObjectUtils.Null> send( ) {
         return asNull();
     }
     
     /**
-     * Same as but async:
-     * <p>
-     * {@link CloudflareRequest#asNull()}
+     * Same as {@link CloudflareRequest#asNull()} but async
      */
     public CompletableFuture<CloudflareResponse<ObjectUtils.Null>> sendAsync( ) {
         return asNullAsync();
     }
     
     /**
-     * Same as consumer method for:
-     * <p>
-     * {@link CloudflareRequest#asNull()}
+     * Same as {@link CloudflareRequest#asNull()} but with consumer
      */
-    public CloudflareResponse<ObjectUtils.Null> send( Consumer<CloudflareResponse<ObjectUtils.Null>> consumer ) {
-        CloudflareResponse<ObjectUtils.Null> response = asNull();
-        consumer.accept( response );
-        return response;
+    public void send( Consumer<CloudflareResponse<ObjectUtils.Null>> consumer ) {
+        consumer.accept( asNull() );
     }
     
     /**
-     * Same as async consumer method for:
-     * <p>
-     * {@link CloudflareRequest#asNull()}
+     * Same as {@link CloudflareRequest#asNull()} but with async callback
      */
-    public CompletableFuture<CloudflareResponse<ObjectUtils.Null>> sendAsync( Consumer<CompletableFuture<CloudflareResponse<ObjectUtils.Null>>> consumer ) {
-        CompletableFuture<CloudflareResponse<ObjectUtils.Null>> future = asNullAsync();
-        consumer.accept( future );
-        return future;
+    public void sendAsync( CloudflareCallback<CloudflareResponse<ObjectUtils.Null>> callback ) {
+        asyncCallback( callback, this::asNull );
     }
     
+    /*
+     * asObject
+     * asObject
+     * asObject
+     * asObject
+     * asObject
+     * asObject
+     * asObject
+     * asObject
+     * asObject
+     * asObject
+     */
+    
     /**
-     * Sends request. Parses the json result to the object.
+     * Sends request. Parses the json result as the object type.
      *
      * @param objectType class of object
      * @param <T>        type of object
      * @return CloudflareResponse<T>
      */
     public <T> CloudflareResponse<T> asObject( Class<T> objectType ) {
-        HttpResponse<String> httpResponse = sendRequest();
-        JsonObject json = new JsonParser().parse( httpResponse.getBody() ).getAsJsonObject();
+        HttpResponse<String> httpResponse = response().getLeft();
+        JsonObject json = response().getRight();
         if ( json.get( "result" ).isJsonObject() ) {
             return new CloudflareResponse<>(
                     json,
@@ -281,46 +315,46 @@ public class CloudflareRequest {
     }
     
     /**
-     * Async method for:
-     * <p>
-     * {@link CloudflareRequest#asObject(Class)}
+     * Async method for {@link CloudflareRequest#asObject(Class)}
      */
     public <T> CompletableFuture<CloudflareResponse<T>> asObjectAsync( Class<T> objectType ) {
         return CompletableFuture.supplyAsync( ( ) -> asObject( objectType ), getCloudflareAccess().getThreadPool() );
     }
     
     /**
-     * Consumer method for:
-     * <p>
-     * {@link CloudflareRequest#asObject(Class)}
+     * Consumer method for {@link CloudflareRequest#asObject(Class)}
      */
-    public <T> CloudflareResponse<T> asObject( Class<T> objectType, Consumer<CloudflareResponse<T>> consumer ) {
-        CloudflareResponse<T> response = asObject( objectType );
-        consumer.accept( response );
-        return response;
+    public <T> void asObject( Class<T> objectType, Consumer<CloudflareResponse<T>> consumer ) {
+        consumer.accept( asObject( objectType ) );
     }
     
     /**
-     * Async consumer method for:
-     * <p>
-     * {@link CloudflareRequest#asObject(Class)}
+     * Callback method for {@link CloudflareRequest#asObject(Class)}
      */
-    public <T> CompletableFuture<CloudflareResponse<T>> asObjectAsync( Class<T> objectType, Consumer<CompletableFuture<CloudflareResponse<T>>> consumer ) {
-        CompletableFuture<CloudflareResponse<T>> future = asObjectAsync( objectType );
-        consumer.accept( future );
-        return future;
+    public <T> void asObject( Class<T> objectType, CloudflareCallback<CloudflareResponse<T>> callback ) {
+        asyncCallback( callback, ( ) -> asObject( objectType ) );
     }
     
+    /*
+     * asObjectList
+     * asObjectList
+     * asObjectList
+     * asObjectList
+     * asObjectList
+     * asObjectList
+     * asObjectList
+     */
+    
     /**
-     * Sends request. Parses and maps all entries in the json array result to a List<T>.
+     * Sends request. Parses and maps all entries in the json array result as a List<object type>.
      *
      * @param objectType class of object
      * @param <T>        type of object
-     * @return CloudflareResponse<List                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               <                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               T>>
+     * @return CloudflareResponse
      */
     public <T> CloudflareResponse<List<T>> asObjectList( Class<T> objectType ) {
-        HttpResponse<String> httpResponse = sendRequest();
-        JsonObject json = new JsonParser().parse( httpResponse.getBody() ).getAsJsonObject();
+        JsonObject json = response().getRight();
+        HttpResponse<String> httpResponse = response().getLeft();
         
         if ( json.get( "result" ).isJsonArray() ) {
             // Map object from json array to object list.
@@ -342,35 +376,35 @@ public class CloudflareRequest {
     }
     
     /**
-     * Async method for:
-     * <p>
-     * {@link CloudflareRequest#asObjectList(Class)}
+     * Async method for {@link CloudflareRequest#asObjectList(Class)}
      */
     public <T> CompletableFuture<CloudflareResponse<List<T>>> asObjectListAsync( Class<T> objectType ) {
         return CompletableFuture.supplyAsync( ( ) -> asObjectList( objectType ), getCloudflareAccess().getThreadPool() );
     }
     
     /**
-     * Consumer method for:
-     *
-     * {@link CloudflareRequest#asObjectList(Class)}
+     * Consumer method for {@link CloudflareRequest#asObjectList(Class)}
      */
-    public <T> CloudflareResponse<List<T>> asObjectList( Class<T> objectType, Consumer<CloudflareResponse<List<T>>> consumer ) {
-        CloudflareResponse<List<T>> response = asObjectList( objectType );
-        consumer.accept( response );
-        return response;
+    public <T> void asObjectList( Class<T> objectType, Consumer<CloudflareResponse<List<T>>> consumer ) {
+        consumer.accept( asObjectList( objectType ) );
     }
     
     /**
-     * Async consumer method for:
-     *
-     * {@link CloudflareRequest#asObjectList(Class)}
+     * Async callback method for {@link CloudflareRequest#asObjectList(Class)}
      */
-    public <T> CompletableFuture<CloudflareResponse<List<T>>> asObjectListAsync( Class<T> objectType, Consumer<CompletableFuture<CloudflareResponse<List<T>>>> consumer ) {
-        CompletableFuture<CloudflareResponse<List<T>>> future = asObjectListAsync( objectType );
-        consumer.accept( future );
-        return future;
+    public <T> void asObjectList( Class<T> objectType, CloudflareCallback<CloudflareResponse<List<T>>> callback ) {
+        asyncCallback( callback, ( ) -> asObjectList( objectType ) );
     }
+    
+    /*
+     * asObjectOrObjectList
+     * asObjectOrObjectList
+     * asObjectOrObjectList
+     * asObjectOrObjectList
+     * asObjectOrObjectList
+     * asObjectOrObjectList
+     * asObjectOrObjectList
+     */
     
     /**
      * Sends the request.
@@ -384,25 +418,25 @@ public class CloudflareRequest {
      * * <pre>
      * {@code
      * CloudflareResponse response = new CloudflareRequest( Category.LIST_DNS_RECORDS, cloudflareAccess )
-     *    .identifiers( zoneId, "dns_record_id" )
-     *    .asObjectOrListOfObjects( DNSRecord.class );
-     * System.out.println((List<DNSRecord>) response.getObject());
+     *    .identifiers( zoneId )
+     *    .asObjectOrObjectList( DNSRecord.class );
+     * List<DNSRecord> records = (List<DNSRecord>) response.getObject();
      * <p>
      * {@code
      * CloudflareResponse response = new CloudflareRequest( Category.DNS_RECORD_DETAILS, cloudflareAccess )
      *    .identifiers( zoneId, "dns_record_id" )
-     *    .asObjectOrListOfObjects( DNSRecord.class );
-     * System.out.println((DNSRecord) response.getObject());
+     *    .asObjectOrObjectList( DNSRecord.class );
+     * DNSRecord record = (DNSRecord) response.getObject();
      * }
      * </pre>
      *
      * @param objectType class of object type
      * @param <T>        will be the type of the "object" attribute in the returned CloudflareResponse<T> (or List<T>)
-     * @return the CloudflareResponse<T>, attribute "object" is T or List<T>
+     * @return the CloudflareResponse<T> with attribute "object" as type T or List<T>
      */
-    public <T> CloudflareResponse<T> asObjectOrListOfObjects( Class<T> objectType ) {
-        HttpResponse<String> httpResponse = sendRequest();
-        JsonObject json = new JsonParser().parse( httpResponse.getBody() ).getAsJsonObject();
+    public <T> CloudflareResponse<T> asObjectOrObjectList( Class<T> objectType ) {
+        JsonObject json = response().getRight();
+        HttpResponse<String> httpResponse = response().getLeft();
         
         T object;
         // Check if result is json array.
@@ -429,36 +463,93 @@ public class CloudflareRequest {
     }
     
     /**
-     * Async method for:
-     * <p>
-     * {@link CloudflareRequest#asObjectOrListOfObjects(Class)}
+     * Async method for {@link CloudflareRequest#asObjectOrObjectList(Class)}
      */
-    public <T> CompletableFuture<CloudflareResponse<T>> asObjectOrListOfObjectsAsync( Class<T> objectType ) {
-        return CompletableFuture.supplyAsync( ( ) -> asObjectOrListOfObjects( objectType ), getCloudflareAccess().getThreadPool() );
+    public <T> CompletableFuture<CloudflareResponse<T>> asObjectOrObjectListAsync( Class<T> objectType ) {
+        return CompletableFuture.supplyAsync( ( ) -> asObjectOrObjectList( objectType ), getCloudflareAccess().getThreadPool() );
     }
     
     /**
-     * Consumer method for:
-     * <p>
-     * {@link CloudflareRequest#asObjectOrListOfObjects(Class)}
+     * Consumer method for {@link CloudflareRequest#asObjectOrObjectList(Class)}
      */
-    public <T> CloudflareResponse<T> asObjectOrListOfObjects( Class<T> objectType, Consumer<CloudflareResponse<T>> consumer ) {
-        CloudflareResponse<T> response = asObjectOrListOfObjects( objectType );
-        consumer.accept( response );
-        return response;
+    public <T> void asObjectOrObjectList( Class<T> objectType, Consumer<CloudflareResponse<T>> consumer ) {
+        consumer.accept( asObjectOrObjectList( objectType ) );
     }
     
     /**
-     * Async consumer method for:
-     * <p>
-     * {@link CloudflareRequest#asObjectOrListOfObjects(Class)}
+     * Async callback method for {@link CloudflareRequest#asObjectOrObjectList(Class)}
      */
-    public <T> CompletableFuture<CloudflareResponse<T>> asObjectOrListOfObjectsAsync( Class<T> objectType, Consumer<CompletableFuture<CloudflareResponse<T>>> consumer ) {
-        CompletableFuture<CloudflareResponse<T>> response = asObjectOrListOfObjectsAsync( objectType );
-        consumer.accept( response );
-        return response;
+    public <T> void asObjectOrObjectListAsync( Class<T> objectType, CloudflareCallback<CloudflareResponse<T>> callback ) {
+        asyncCallback( callback, ( ) -> asObjectOrObjectList( objectType ) );
     }
     
+    /*
+     * INTERNAL HELPER METHODS
+     * INTERNAL HELPER METHODS
+     * INTERNAL HELPER METHODS
+     * INTERNAL HELPER METHODS
+     * INTERNAL HELPER METHODS
+     * INTERNAL HELPER METHODS
+     * INTERNAL HELPER METHODS
+     * INTERNAL HELPER METHODS
+     */
+    
+    /**
+     * INTERNAL HELPER METHOD!
+     *
+     * @param callback user'S callback
+     * @param solution is returning the solution
+     * @param <T>      type of "object" in CloudflareResponse
+     */
+    private <T> void asyncCallback( CloudflareCallback<CloudflareResponse<T>> callback, Callable<CloudflareResponse<T>> solution ) {
+        ListenableFuture<CloudflareResponse<T>> future = MoreExecutors
+                .listeningDecorator( getCloudflareAccess().getThreadPool() )
+                .submit( solution );
+        
+        HttpResponse<String> httpResponse = response().getLeft();
+        JsonObject json = response().getRight();
+        future.addListener( ( ) -> {
+            Throwable throwable;
+            try {
+                CloudflareResponse<T> response = future.get();
+                // http request successful
+                
+                // check "success" state in json -> cloudflare couldn't find the result
+                if ( !response.isSuccessful() ) {
+                    throw new IllegalStateException( ERROR_CLOUDFLARE_FAILURE );
+                }
+                
+                callback.onSuccess( response );
+                return;
+            } catch ( ExecutionException e ) {
+                throwable = e.getCause();
+            } catch ( Exception | Error e ) {
+                throwable = e;
+            }
+            if ( throwable != null ) {
+                // Errors passed by Cloudflare
+                Map<Integer, String> errors = Maps.newHashMap();
+                
+                // Check if returned json is valid
+                if ( json != null ) {
+                    JsonObject o;
+                    for ( JsonElement e : json.getAsJsonArray( "errors" ) ) {
+                        o = e.getAsJsonObject();
+                        errors.put( o.get( "code" ).getAsInt(), o.get( "message" ).getAsString() );
+                    }
+                }
+                
+                callback.onFailure( throwable, httpResponse.getStatus(), httpResponse.getStatusText(), errors );
+            }
+            
+        }, getCloudflareAccess().getThreadPool() );
+    }
+    
+    /**
+     * INTERNAL HELPER METHOD!
+     *
+     * @return formatted url containing the passed ordered identifiers replaced with {id-ORDER_NUMBER}
+     */
     private String categoryPath( ) {
         String additionalCategoryPath = additionalPath;
         
@@ -469,6 +560,14 @@ public class CloudflareRequest {
         return additionalCategoryPath;
     }
     
+    /**
+     * INTERNAL HELPER METHOD!
+     * <p>
+     * Some format checks of additional path.
+     *
+     * @param additionalPath
+     * @return validated additional path
+     */
     private static String validAdditionalPath( String additionalPath ) {
         if ( additionalPath.startsWith( "/" ) )
             additionalPath = additionalPath.substring( 1 );

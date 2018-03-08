@@ -39,4 +39,3 @@ dependency-reduced-pom.xml
 
 # Private
 /src/test/java/PrivateTests.java
-/src/test/java/PrivateTests_old.java

@@ -8,6 +8,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+/**
+ * @see <a href="https://api.cloudflare.com/#getting-started-requests">https://api.cloudflare.com</a>
+ */
 public class ResultInfo {
     
     @SerializedName("page")
@@ -31,5 +34,4 @@ public class ResultInfo {
                 .append( "count", count )
                 .append( "totalCount", totalCount ).toString();
     }
-    
 }

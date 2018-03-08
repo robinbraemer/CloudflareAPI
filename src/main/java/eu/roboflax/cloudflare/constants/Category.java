@@ -9,6 +9,10 @@ import io.joshworks.restclient.http.HttpMethod;
 
 import static io.joshworks.restclient.http.HttpMethod.*;
 
+/**
+ * Every request that can be made on api.cloudflare.com.
+ * @version March 1st, 2018
+ */
 public enum Category {
     
     // User (The currently logged in/authenticated User)

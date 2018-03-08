@@ -11,6 +11,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+/**
+ * @see <a href="https://api.cloudflare.com/#user-level-firewall-access-rule-properties">https://api.cloudflare.com</a>
+ */
 @Getter
 @Setter
 public class Scope implements Identifiable {

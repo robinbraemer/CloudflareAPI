@@ -8,12 +8,15 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import eu.roboflax.cloudflare_old.objects.zone.ZoneSetting;
+import eu.roboflax.cloudflare.objects.zone.ZoneSetting;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * <a href="http://google.com">ttps://api.cloudflare.com/</a>https://api.cloudflare.com/#zone-settings-get-all-zone-settings
+ */
 public class ZoneSettingDeserializer implements JsonDeserializer<ZoneSetting> {
     
     @Override

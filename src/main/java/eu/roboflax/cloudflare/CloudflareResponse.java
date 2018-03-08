@@ -13,6 +13,11 @@ import lombok.Getter;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents a cloudflare response.
+ *
+ * @param <T> is the type of the parsed result
+ */
 public class CloudflareResponse<T> {
     
     /**
@@ -44,7 +49,7 @@ public class CloudflareResponse<T> {
      * The returned status text
      */
     @Getter
-    private final String statusText;
+    private final String statusMessage;
     
     /**
      * Messages.
@@ -61,14 +66,15 @@ public class CloudflareResponse<T> {
     /**
      * Some infos about the returned result regarding the pagination.
      */
+    @Getter
     private final ResultInfo resultInfo;
     
-    CloudflareResponse( JsonObject json, T object, boolean successful, int statusCode, String statusText ) {
+    CloudflareResponse( JsonObject json, T object, boolean successful, int statusCode, String statusMessage ) {
         this.messages = null; // todo how is their structure?
         this.json = json;
         this.successful = successful;
         this.statusCode = statusCode;
-        this.statusText = statusText;
+        this.statusMessage = statusMessage;
         
         // Errors
         errors = Maps.newHashMap();
