@@ -5,9 +5,9 @@
 package eu.roboflax.cloudflare.constants;
 
 import eu.roboflax.cloudflare.CloudflareAccess;
-import io.joshworks.restclient.http.HttpMethod;
+import eu.roboflax.cloudflare.http.HttpMethod;
 
-import static io.joshworks.restclient.http.HttpMethod.*;
+import static eu.roboflax.cloudflare.http.HttpMethod.*;
 
 /**
  * Every request that can be made on api.cloudflare.com.

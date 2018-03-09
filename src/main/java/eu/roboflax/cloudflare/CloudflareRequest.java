@@ -4,7 +4,6 @@
  */
 package eu.roboflax.cloudflare;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -14,7 +13,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import eu.roboflax.cloudflare.constants.Category;
-import io.joshworks.restclient.http.HttpMethod;
+import eu.roboflax.cloudflare.http.HttpMethod;
 import io.joshworks.restclient.http.HttpResponse;
 import lombok.Getter;
 import org.apache.commons.lang3.ObjectUtils;
@@ -27,9 +26,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.joshworks.restclient.http.HttpMethod.*;
 
 /**
  * Used for creating cloudflare requests.
@@ -47,9 +44,6 @@ public class CloudflareRequest {
     
     private Pair<HttpResponse<String>, JsonObject> response;
     
-    
-    public static final Set<HttpMethod> ALLOWED_HTTP_METHODS = ImmutableSet.of( GET, POST, PUT, DELETE, PATCH );
-    
     public static final String ERROR_INVALID_BODY = "invalid body";
     public static final String ERROR_INVALID_QUERY_STRING = "invalid query string";
     public static final String ERROR_INVALID_IDENTIFIER = "invalid identifier";
@@ -59,12 +53,16 @@ public class CloudflareRequest {
     public static final String ERROR_RESULT_IS_JSON_ARRAY = "Property 'result' is not a json object, because it is a json array use asObjectList() instead of asObject().";
     public static final String ERROR_RESULT_IS_JSON_NULL = "Something went wrong! Property 'result' is a json null.";
     
-    public static final String ERROR_CLOUDFLARE_FAILURE = "Cloudflare was unable to determine the result of the requested information. " +
-            "The http request still was successful, you can use .getJson() to retrieve further information.";
+    public static final String ERROR_PARSING_JSON = "Could not parse returned text as json.";
+    
+    /**
+     * The http request still was successful. If you used a CloudflareCallback for this request then onFailure will be executed.
+     * Otherwise if you have a CloudflareResponse object you can still use .getJson() to retrieve further information.
+     */
+    public static final String ERROR_CLOUDFLARE_FAILURE = "Cloudflare was unable to determine the result of the requested information.";
     
     
     public CloudflareRequest( HttpMethod httpMethod, CloudflareAccess cloudflareAccess ) {
-        checkArgument( ALLOWED_HTTP_METHODS.contains( httpMethod ), String.format( "Http method %s not allowed.", httpMethod ) );
         this.httpMethod = httpMethod;
         this.cloudflareAccess = cloudflareAccess;
     }
@@ -155,44 +153,49 @@ public class CloudflareRequest {
     }
     
     private HttpResponse<String> sendRequest( ) {
-        if ( GET.equals( httpMethod ) ) {
-            return cloudflareAccess.getRestClient()
-                    .get( categoryPath() )
-                    .queryString( queryStrings )
-                    .asString();
-        } else if ( POST.equals( httpMethod ) ) {
-            return cloudflareAccess.getRestClient()
-                    .post( categoryPath() )
-                    .queryString( queryStrings )
-                    .body( body.toString() )
-                    .asString();
-        } else if ( DELETE.equals( httpMethod ) ) {
-            return cloudflareAccess.getRestClient()
-                    .delete( categoryPath() )
-                    .queryString( queryStrings )
-                    .body( body.toString() )
-                    .asString();
-        } else if ( PUT.equals( httpMethod ) ) {
-            return cloudflareAccess.getRestClient()
-                    .put( categoryPath() )
-                    .queryString( queryStrings )
-                    .body( body.toString() )
-                    .asString();
-        } else if ( PATCH.equals( httpMethod ) ) {
-            return cloudflareAccess.getRestClient()
-                    .patch( categoryPath() )
-                    .queryString( queryStrings )
-                    .body( body.toString() )
-                    .asString();
+        switch ( httpMethod ) {
+            case GET:
+                return cloudflareAccess.getRestClient()
+                        .get( categoryPath() )
+                        .queryString( queryStrings )
+                        .asString();
+            case POST:
+                return cloudflareAccess.getRestClient()
+                        .post( categoryPath() )
+                        .queryString( queryStrings )
+                        .body( body.toString() )
+                        .asString();
+            case DELETE:
+                return cloudflareAccess.getRestClient()
+                        .delete( categoryPath() )
+                        .queryString( queryStrings )
+                        .body( body.toString() )
+                        .asString();
+            case PUT:
+                return cloudflareAccess.getRestClient()
+                        .put( categoryPath() )
+                        .queryString( queryStrings )
+                        .body( body.toString() )
+                        .asString();
+            case PATCH:
+                return cloudflareAccess.getRestClient()
+                        .patch( categoryPath() )
+                        .queryString( queryStrings )
+                        .body( body.toString() )
+                        .asString();
+            default:
+                throw new IllegalStateException( "Should never happen because other http methods are blocked." );
         }
-        throw new IllegalStateException( "Should never happen because other http methods are blocked." );
     }
     
     private Pair<HttpResponse<String>, JsonObject> response( ) {
         if ( response == null ) {
             HttpResponse<String> httpResponse = sendRequest();
-            JsonObject json = new JsonParser().parse( httpResponse.getBody() ).getAsJsonObject();
-            response = Pair.of( httpResponse, json );
+            JsonElement parsed = new JsonParser().parse( httpResponse.getBody() );
+            // Check if parsing was successful, gson returns json null if failed
+            if ( parsed.isJsonNull() )
+                throw new IllegalStateException( ERROR_PARSING_JSON );
+            response = Pair.of( httpResponse, parsed.getAsJsonObject() );
         }
         return response;
     }
@@ -235,12 +238,18 @@ public class CloudflareRequest {
     }
     
     /**
-     * Async CloudflareCallback method for {@link CloudflareRequest#asNull()}
+     * Async callback method for {@link CloudflareRequest#asNull()}
      */
     public void asNullAsync( CloudflareCallback<CloudflareResponse<ObjectUtils.Null>> callback ) {
         asyncCallback( callback, this::asNull );
     }
     
+    /**
+     * Sync callback method for {@link CloudflareRequest#asNull()}
+     */
+    public void asNull( CloudflareCallback<CloudflareResponse<ObjectUtils.Null>> callback ) {
+        syncCallback( callback, this::asNull );
+    }
     
     /**
      * Async method for {@link CloudflareRequest#asNull()}
@@ -275,6 +284,13 @@ public class CloudflareRequest {
      */
     public void sendAsync( CloudflareCallback<CloudflareResponse<ObjectUtils.Null>> callback ) {
         asyncCallback( callback, this::asNull );
+    }
+    
+    /**
+     * Same as {@link CloudflareRequest#asNull()} but with sync callback
+     */
+    public void send( CloudflareCallback<CloudflareResponse<ObjectUtils.Null>> callback ) {
+        syncCallback( callback, this::asNull );
     }
     
     /*
@@ -324,15 +340,22 @@ public class CloudflareRequest {
     /**
      * Consumer method for {@link CloudflareRequest#asObject(Class)}
      */
-    public <T> void asObject( Class<T> objectType, Consumer<CloudflareResponse<T>> consumer ) {
+    public <T> void asObject( Consumer<CloudflareResponse<T>> consumer, Class<T> objectType ) {
         consumer.accept( asObject( objectType ) );
     }
     
     /**
-     * Callback method for {@link CloudflareRequest#asObject(Class)}
+     * Async callback method for {@link CloudflareRequest#asObject(Class)}
      */
-    public <T> void asObject( Class<T> objectType, CloudflareCallback<CloudflareResponse<T>> callback ) {
+    public <T> void asObjectAsync( CloudflareCallback<CloudflareResponse<T>> callback, Class<T> objectType ) {
         asyncCallback( callback, ( ) -> asObject( objectType ) );
+    }
+    
+    /**
+     * Sync callback method for {@link CloudflareRequest#asObject(Class)}
+     */
+    public <T> void asObject( CloudflareCallback<CloudflareResponse<T>> callback, Class<T> objectType ) {
+        syncCallback( callback, ( ) -> asObject( objectType ) );
     }
     
     /*
@@ -385,15 +408,22 @@ public class CloudflareRequest {
     /**
      * Consumer method for {@link CloudflareRequest#asObjectList(Class)}
      */
-    public <T> void asObjectList( Class<T> objectType, Consumer<CloudflareResponse<List<T>>> consumer ) {
+    public <T> void asObjectList( Consumer<CloudflareResponse<List<T>>> consumer, Class<T> objectType ) {
         consumer.accept( asObjectList( objectType ) );
     }
     
     /**
      * Async callback method for {@link CloudflareRequest#asObjectList(Class)}
      */
-    public <T> void asObjectList( Class<T> objectType, CloudflareCallback<CloudflareResponse<List<T>>> callback ) {
+    public <T> void asObjectListAsync( CloudflareCallback<CloudflareResponse<List<T>>> callback, Class<T> objectType ) {
         asyncCallback( callback, ( ) -> asObjectList( objectType ) );
+    }
+    
+    /**
+     * Sync callback method for {@link CloudflareRequest#asObjectList(Class)}
+     */
+    public <T> void asObjectList( CloudflareCallback<CloudflareResponse<List<T>>> callback, Class<T> objectType ) {
+        syncCallback( callback, ( ) -> asObjectList( objectType ) );
     }
     
     /*
@@ -446,11 +476,10 @@ public class CloudflareRequest {
             }.getType();
             List<T> objectList = CloudflareAccess.getGson().fromJson( json.getAsJsonArray( "result" ), listType );
             object = (T) objectList;
-        } else if ( json.get( "result" ).isJsonNull() )
-            throw new IllegalStateException( ERROR_RESULT_IS_JSON_NULL );
-        else
-            // Object is normal (not in array or null)
+        } else if ( json.get( "result" ).isJsonObject() )
+            // json is a json object and the object is not mapped in a List
             object = CloudflareAccess.getGson().fromJson( json.getAsJsonObject( "result" ), objectType );
+        else throw new IllegalStateException( ERROR_RESULT_IS_JSON_NULL );
         
         // Return the response
         return new CloudflareResponse<>(
@@ -472,15 +501,22 @@ public class CloudflareRequest {
     /**
      * Consumer method for {@link CloudflareRequest#asObjectOrObjectList(Class)}
      */
-    public <T> void asObjectOrObjectList( Class<T> objectType, Consumer<CloudflareResponse<T>> consumer ) {
+    public <T> void asObjectOrObjectList( Consumer<CloudflareResponse<T>> consumer, Class<T> objectType ) {
         consumer.accept( asObjectOrObjectList( objectType ) );
     }
     
     /**
      * Async callback method for {@link CloudflareRequest#asObjectOrObjectList(Class)}
      */
-    public <T> void asObjectOrObjectListAsync( Class<T> objectType, CloudflareCallback<CloudflareResponse<T>> callback ) {
+    public <T> void asObjectOrObjectListAsync( CloudflareCallback<CloudflareResponse<T>> callback, Class<T> objectType ) {
         asyncCallback( callback, ( ) -> asObjectOrObjectList( objectType ) );
+    }
+    
+    /**
+     * Sync callback method for {@link CloudflareRequest#asObjectOrObjectList(Class)}
+     */
+    public <T> void asObjectOrObjectList( CloudflareCallback<CloudflareResponse<T>> callback, Class<T> objectType ) {
+        syncCallback( callback, ( ) -> asObjectOrObjectList( objectType ) );
     }
     
     /*
@@ -497,52 +533,66 @@ public class CloudflareRequest {
     /**
      * INTERNAL HELPER METHOD!
      *
-     * @param callback user'S callback
-     * @param solution is returning the solution
-     * @param <T>      type of "object" in CloudflareResponse
+     * @param callback    user'S callback
+     * @param getResponse .call() is returning the CloudflareResponse<T>
+     * @param <T>         type of "object" in CloudflareResponse
      */
-    private <T> void asyncCallback( CloudflareCallback<CloudflareResponse<T>> callback, Callable<CloudflareResponse<T>> solution ) {
-        ListenableFuture<CloudflareResponse<T>> future = MoreExecutors
-                .listeningDecorator( getCloudflareAccess().getThreadPool() )
-                .submit( solution );
-        
+    private <T> void runCallback( CloudflareCallback<CloudflareResponse<T>> callback, Callable<CloudflareResponse<T>> getResponse ) {
         HttpResponse<String> httpResponse = response().getLeft();
         JsonObject json = response().getRight();
-        future.addListener( ( ) -> {
-            Throwable throwable;
-            try {
-                CloudflareResponse<T> response = future.get();
-                // http request successful
-                
-                // check "success" state in json -> cloudflare couldn't find the result
-                if ( !response.isSuccessful() ) {
-                    throw new IllegalStateException( ERROR_CLOUDFLARE_FAILURE );
-                }
-                
-                callback.onSuccess( response );
-                return;
-            } catch ( ExecutionException e ) {
-                throwable = e.getCause();
-            } catch ( Exception | Error e ) {
-                throwable = e;
-            }
-            if ( throwable != null ) {
-                // Errors passed by Cloudflare
-                Map<Integer, String> errors = Maps.newHashMap();
-                
-                // Check if returned json is valid
-                if ( json != null ) {
-                    JsonObject o;
-                    for ( JsonElement e : json.getAsJsonArray( "errors" ) ) {
-                        o = e.getAsJsonObject();
-                        errors.put( o.get( "code" ).getAsInt(), o.get( "message" ).getAsString() );
-                    }
-                }
-                
-                callback.onFailure( throwable, httpResponse.getStatus(), httpResponse.getStatusText(), errors );
+        
+        Throwable throwable;
+        try {
+            CloudflareResponse<T> response = getResponse.call();
+            // http request successful
+            
+            // check "success" state in json -> cloudflare couldn't find the result
+            if ( !response.isSuccessful() ) {
+                throw new IllegalStateException( ERROR_CLOUDFLARE_FAILURE );
             }
             
-        }, getCloudflareAccess().getThreadPool() );
+            try { // Don't run onFailure when onSuccess throws an exception.
+                callback.onSuccess( response );
+            } catch ( Exception | Error e ) {
+                e.printStackTrace();
+            }
+            return;
+        } catch ( ExecutionException e ) {
+            throwable = e.getCause();
+        } catch ( Exception | Error e ) {
+            throwable = e;
+        }
+        // Errors passed by Cloudflare
+        Map<Integer, String> errors = Maps.newHashMap();
+        
+        JsonObject o;
+        for ( JsonElement e : json.getAsJsonArray( "errors" ) ) {
+            o = e.getAsJsonObject();
+            errors.put( o.get( "code" ).getAsInt(), o.get( "message" ).getAsString() );
+        }
+        
+        callback.onFailure( throwable, httpResponse.getStatus(), httpResponse.getStatusText(), errors );
+    }
+    
+    /**
+     * INTERNAL HELPER METHOD!
+     * <p>
+     * Wrapping {@link eu.roboflax.cloudflare.CloudflareRequest#runCallback(CloudflareCallback, Callable)} as synced callback.
+     */
+    private <T> void syncCallback( CloudflareCallback<CloudflareResponse<T>> callback, Callable<CloudflareResponse<T>> getResponse ) {
+        runCallback( callback, getResponse );
+    }
+    
+    /**
+     * INTERNAL HELPER METHOD!
+     * <p>
+     * Wrapping {@link eu.roboflax.cloudflare.CloudflareRequest#runCallback(CloudflareCallback, Callable)} as async callback.
+     */
+    private <T> void asyncCallback( CloudflareCallback<CloudflareResponse<T>> callback, Callable<CloudflareResponse<T>> getResponse ) {
+        ListenableFuture<CloudflareResponse<T>> future = MoreExecutors
+                .listeningDecorator( getCloudflareAccess().getThreadPool() )
+                .submit( getResponse );
+        future.addListener( ( ) -> runCallback( callback, future::get ), getCloudflareAccess().getThreadPool() );
     }
     
     /**

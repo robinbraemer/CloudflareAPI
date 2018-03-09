@@ -11,7 +11,7 @@ import java.util.concurrent.Future;
 
 /**
  * A callback for accepting the results of a {@link eu.roboflax.cloudflare.CloudflareResponse}
- * computation asynchronously.
+ * computation asynchronously OR synchronously.
  */
 public interface CloudflareCallback<V> {
     /**
@@ -22,8 +22,10 @@ public interface CloudflareCallback<V> {
     /**
      * Invoked when a request fails or is canceled.
      * <p>
-     * <p>If the future's {@link Future#get() get} method throws an {@link ExecutionException}, then
-     * the cause is passed to this method. Any other thrown object is passed unaltered.
+     * <p>If this method is in "async-mode" and the future's {@link Future#get() get} method throws an {@link ExecutionException}, then
+     * the cause is passed to this method.
+     *
+     * Any other thrown object is passed unaltered.
      */
     void onFailure( Throwable t, int statusCode, String statusMessage, Map<Integer, String> errors );
 }

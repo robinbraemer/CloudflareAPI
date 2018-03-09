@@ -1,4 +1,4 @@
-# Cloudflare: The Cloudflare - API/Library for Java
+# Cloudflare: The Cloudflare - API/Library for Java (UPDATE: NEW CONCEPTS)
 
 [![Travis][travis-img]][travis-url]
 [![JitPack][jitpack-img]][jitpack-url]
@@ -8,7 +8,14 @@
 This Cloudflare API/Library interacts with [Cloudflare's fast API v4](https://api.cloudflare.com/)
 and allows you to access every single feature _(even if it isn't added yet)_ of Cloudflare's API faster and much easier!
 
-## Latest release
+## Latest release (NEW CONCEPTS)
+**Updating to the newest [v1.3.0][releases-url] (or newer) is highly recommended!**
+
+**IMPORTANT:** _If you update from [v1.2.3](https://github.com/RoboFlax/CloudflareAPI/releases/tag/1.2.3)
+(or older) to a newer version, you probably have to fix and recode the lines where this api is used
+due to massive changes._
+
+
 To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the following:
 
 **Maven:**
@@ -49,7 +56,7 @@ allprojects {
 ## Getting Started
 First, create an entry-point to use this api.
 ```java
-String CF_EMAIL = "your_cloudflare_email@example.com";
+String CF_EMAIL = "your_cloudflare@email.com";
 String CF_API_KEY = "your_cloudflare_api_key";
 
 CloudflareAccess cfAccess = new CloudflareAccess(CF_EMAIL, CF_API_KEY);
@@ -57,12 +64,18 @@ CloudflareAccess cfAccess = new CloudflareAccess(CF_EMAIL, CF_API_KEY);
 
 ## Learn more about the Cloudflare - API/Library
 
-- Our users' guide in the wiki, [Cloudflare - API/Library explained](https://github.com/RoboFlax/CloudflareAPI/wiki).
+- Our users' guide in the wiki, [Cloudflare - API/Library explained][wiki-url].
 
 ### Licensing
 Licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
 
 
+
+
+
+
+[releases-url]: https://github.com/RoboFlax/CloudflareAPI/releases
+[wiki-url]: https://github.com/RoboFlax/CloudflareAPI/wiki
 
 
 [travis-url]: https://travis-ci.org/RoboFlax/CloudflareAPI
