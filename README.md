@@ -1,4 +1,4 @@
-# The Cloudflare - API/Library for Java (UPDATE: NEW CONCEPTS)
+# The Cloudflare - API/Library for Java (NEW CONCEPTS)
 
 [![Travis][travis-img]][travis-url]
 [![JitPack][jitpack-img]][jitpack-url]
@@ -48,10 +48,11 @@ allprojects {
 ```
 
 ## Features
+- **easy to build cloudflare requests (builder pattern)**
 - **able to access every corner of cloudflare's api**
-- **parsing results as objects**
-- **object oriented representation of the cloudflare api responses** _(!= 100%)_
+- **parsing results as objects (object oriented representation)**
 - **it is an extremely flexible api**
+- **asynchronicity support**
 
 ## Getting Started
 First, create an entry-point to use this api.
@@ -62,7 +63,7 @@ String CF_API_KEY = "your_cloudflare_api_key";
 CloudflareAccess cfAccess = new CloudflareAccess(CF_EMAIL, CF_API_KEY);
 ```
 
-Then you can create cloudflare requests
+Then you can create cloudflare requests.
 ```java
 new CloudflareRequest( Category.LIST_ZONES, cloudflareAccess )
         .asObjectList( new CloudflareCallback<CloudflareResponse<List<Zone>>>() {
@@ -80,7 +81,8 @@ new CloudflareRequest( Category.LIST_ZONES, cloudflareAccess )
 
 ## Learn more about the Cloudflare - API/Library
 
-- Our users' guide in the wiki, [Cloudflare - API/Library explained][wiki-url].
+- Check out our users' guide in the wiki, [Cloudflare - API/Library explained][wiki-url].
+- There is a lot to discover about this api/library.
 
 ### Licensing
 Licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.

@@ -89,9 +89,13 @@ public class CloudflareAccess implements Closeable {
         CloudflareAccess.gson = checkNotNull( gson );
     }
     
+    public boolean isThreadPoolInitialized( ) {
+        return threadPool != null;
+    }
+    
     public ExecutorService getThreadPool( ) {
-        if ( this.threadPool == null )
-            this.threadPool = DEFAULT_THREAD_POOL;
+        if ( !isThreadPoolInitialized() )
+            threadPool = DEFAULT_THREAD_POOL;
         return threadPool;
     }
     
