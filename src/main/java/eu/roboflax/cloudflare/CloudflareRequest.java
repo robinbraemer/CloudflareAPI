@@ -8,19 +8,22 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 import eu.roboflax.cloudflare.constants.Category;
 import eu.roboflax.cloudflare.http.HttpMethod;
 import io.joshworks.restclient.http.HttpResponse;
 import lombok.Getter;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -44,6 +47,8 @@ public class CloudflareRequest {
     
     private Pair<HttpResponse<String>, JsonObject> response;
     
+    public static final String ERROR_INVALID_ADDITIONAL_PATH = "you have to specify the additional path";
+    public static final String ERROR_INVALID_HTTP_METHOD = "you have to specify the http method";
     public static final String ERROR_INVALID_BODY = "invalid body";
     public static final String ERROR_INVALID_QUERY_STRING = "invalid query string";
     public static final String ERROR_INVALID_IDENTIFIER = "invalid identifier";
@@ -59,38 +64,115 @@ public class CloudflareRequest {
      * The http request still was successful. If you used a CloudflareCallback for this request then onFailure will be executed.
      * Otherwise if you have a CloudflareResponse object you can still use .getJson() to retrieve further information.
      */
-    public static final String ERROR_CLOUDFLARE_FAILURE = "Cloudflare was unable to determine the result of the requested information.";
+    public static final String ERROR_CLOUDFLARE_FAILURE = "Cloudflare itself failed. " +
+            "Cloudflare was unable to perform your request and couldn't determine the result of the requested/passed information. " +
+            "Maybe you built the request wrong?";
     
     
-    public CloudflareRequest( HttpMethod httpMethod, CloudflareAccess cloudflareAccess ) {
-        this.httpMethod = httpMethod;
-        this.cloudflareAccess = cloudflareAccess;
+    public CloudflareRequest( ) {
     }
     
-    public CloudflareRequest( HttpMethod httpMethod, String additionalPath, CloudflareAccess cloudflareAccess ) {
-        this( httpMethod, cloudflareAccess );
+    public CloudflareRequest( HttpMethod httpMethod ) {
+        httpMethod( httpMethod );
+    }
+    
+    public CloudflareRequest( String additionalPath ) {
         additionalPath( additionalPath );
     }
     
+    public CloudflareRequest( CloudflareAccess cloudflareAccess ) {
+        cloudflareAccess( cloudflareAccess );
+    }
+    
+    public CloudflareRequest( HttpMethod httpMethod, CloudflareAccess cloudflareAccess ) {
+        httpMethod( httpMethod ).cloudflareAccess( cloudflareAccess );
+    }
+    
+    public CloudflareRequest( HttpMethod httpMethod, String additionalPath ) {
+        httpMethod( httpMethod ).additionalPath( additionalPath );
+    }
+    
+    public CloudflareRequest( String additionalPath, CloudflareAccess cloudflareAccess ) {
+        additionalPath( additionalPath ).cloudflareAccess( cloudflareAccess );
+    }
+    
+    public CloudflareRequest( HttpMethod httpMethod, String additionalPath, CloudflareAccess cloudflareAccess ) {
+        httpMethod( httpMethod ).additionalPath( additionalPath ).cloudflareAccess( cloudflareAccess );
+    }
+    
     public CloudflareRequest( Category category, CloudflareAccess cloudflareAccess ) {
-        this( category.getHttpMethod(), category.getAdditionalPath(), cloudflareAccess );
+        category( category ).cloudflareAccess( cloudflareAccess );
     }
     
-    public static CloudflareRequest builder( HttpMethod httpMethod, String additionalPath, CloudflareAccess cloudflareAccess ) {
-        return new CloudflareRequest( httpMethod, additionalPath, cloudflareAccess );
+    public CloudflareRequest( Category category ) {
+        category( category );
     }
     
-    public static CloudflareRequest builder( HttpMethod httpMethod, CloudflareAccess cloudflareAccess ) {
+    public static CloudflareRequest newRequest( ) {
+        return new CloudflareRequest();
+    }
+    
+    public static CloudflareRequest newRequest( HttpMethod httpMethod ) {
+        return new CloudflareRequest( httpMethod );
+    }
+    
+    public static CloudflareRequest newRequest( String additionalPath ) {
+        return new CloudflareRequest( additionalPath );
+    }
+    
+    public static CloudflareRequest newRequest( CloudflareAccess cloudflareAccess ) {
+        return new CloudflareRequest( cloudflareAccess );
+    }
+    
+    public static CloudflareRequest newRequest( HttpMethod httpMethod, String additionalPath ) {
+        return new CloudflareRequest( httpMethod, additionalPath );
+    }
+    
+    public static CloudflareRequest newRequest( String additionalPath, CloudflareAccess cloudflareAccess ) {
+        return new CloudflareRequest( additionalPath, cloudflareAccess );
+    }
+    
+    public static CloudflareRequest newRequest( HttpMethod httpMethod, CloudflareAccess cloudflareAccess ) {
         return new CloudflareRequest( httpMethod, cloudflareAccess );
     }
     
-    public static CloudflareRequest builder( Category category, CloudflareAccess cloudflareAccess ) {
-        return builder( category.getHttpMethod(), category.getAdditionalPath(), cloudflareAccess );
+    public static CloudflareRequest newRequest( HttpMethod httpMethod, String additionalPath, CloudflareAccess cloudflareAccess ) {
+        return new CloudflareRequest( httpMethod, additionalPath, cloudflareAccess );
     }
     
+    public static CloudflareRequest newRequest( Category category ) {
+        return new CloudflareRequest( category );
+    }
     
+    public static CloudflareRequest newRequest( Category category, CloudflareAccess cloudflareAccess ) {
+        return new CloudflareRequest( category, cloudflareAccess );
+    }
+    
+    /**
+     * Sets the additional path which will be appended on {@link eu.roboflax.cloudflare.CloudflareAccess#API_BASE_URL}.
+     * Not usable when {@link eu.roboflax.cloudflare.constants.Category} was given.
+     *
+     * @param additionalPath
+     * @return
+     */
     public CloudflareRequest additionalPath( String additionalPath ) {
-        this.additionalPath = validAdditionalPath( additionalPath );
+        this.additionalPath = validAdditionalPath( checkNotNull( additionalPath ) );
+        return this;
+    }
+    
+    public CloudflareRequest httpMethod( HttpMethod httpMethod ) {
+        this.httpMethod = checkNotNull( httpMethod );
+        return this;
+    }
+    
+    public CloudflareRequest category( Category category ) {
+        checkNotNull( category );
+        httpMethod( category.getHttpMethod() ).additionalPath( category.getAdditionalPath() );
+        return this;
+    }
+    
+    public CloudflareRequest cloudflareAccess( CloudflareAccess cloudflareAccess ) {
+        this.cloudflareAccess = checkNotNull( cloudflareAccess );
         return this;
     }
     
@@ -119,6 +201,21 @@ public class CloudflareRequest {
         checkNotNull( values, ERROR_INVALID_QUERY_STRING );
         for ( Object value : values )
             queryString( parameter, value );
+        return this;
+    }
+    
+    public CloudflareRequest body( JsonObject wholeBody ) {
+        body = checkNotNull( wholeBody );
+        return this;
+    }
+    
+    public CloudflareRequest body( JsonElement wholeBody ) {
+        body( checkNotNull( wholeBody ).getAsJsonObject() );
+        return this;
+    }
+    
+    public CloudflareRequest body( String wholeBody ) {
+        body( new JsonParser().parse( checkNotNull( wholeBody ) ) );
         return this;
     }
     
@@ -153,7 +250,7 @@ public class CloudflareRequest {
     }
     
     private HttpResponse<String> sendRequest( ) {
-        switch ( httpMethod ) {
+        switch ( checkNotNull( httpMethod, ERROR_INVALID_HTTP_METHOD ) ) {
             case GET:
                 return cloudflareAccess.getRestClient()
                         .get( categoryPath() )
@@ -201,29 +298,29 @@ public class CloudflareRequest {
     }
     
     /*
-     * asNull
-     * asNull
-     * asNull
-     * asNull
-     * asNull
-     * asNull
-     * asNull
-     * asNull
-     * asNull
-     * asNull
+     * asVoid
+     * asVoid
+     * asVoid
+     * asVoid
+     * asVoid
+     * asVoid
+     * asVoid
+     * asVoid
+     * asVoid
+     * asVoid
      */
     
     /**
      * Sends request. No object mapping and/or object parsing will be handled.
      *
-     * @return CloudflareResponse<ObjectUtils.Null>
+     * @return CloudflareResponse<Void>
      */
-    public CloudflareResponse<ObjectUtils.Null> asNull( ) {
+    public CloudflareResponse<Void> asVoid( ) {
         HttpResponse<String> httpResponse = response().getLeft();
         JsonObject json = response().getRight();
         return new CloudflareResponse<>(
                 json,
-                ObjectUtils.NULL,
+                null,
                 httpResponse.isSuccessful(),
                 httpResponse.getStatus(),
                 httpResponse.getStatusText()
@@ -231,66 +328,66 @@ public class CloudflareRequest {
     }
     
     /**
-     * Consumer method for: {@link CloudflareRequest#asNull()}
+     * Consumer method for: {@link CloudflareRequest#asVoid()}
      */
-    public void asNull( Consumer<CloudflareResponse<ObjectUtils.Null>> consumer ) {
-        consumer.accept( asNull() );
+    public void asVoid( Consumer<CloudflareResponse<Void>> consumer ) {
+        consumer.accept( asVoid() );
     }
     
     /**
-     * Async callback method for {@link CloudflareRequest#asNull()}
+     * Async callback method for {@link CloudflareRequest#asVoid()}
      */
-    public void asNullAsync( CloudflareCallback<CloudflareResponse<ObjectUtils.Null>> callback ) {
-        asyncCallback( callback, this::asNull );
+    public void asVoidAsync( CloudflareCallback<CloudflareResponse<Void>> callback ) {
+        asyncCallback( callback, this::asVoid );
     }
     
     /**
-     * Sync callback method for {@link CloudflareRequest#asNull()}
+     * Sync callback method for {@link CloudflareRequest#asVoid()}
      */
-    public void asNull( CloudflareCallback<CloudflareResponse<ObjectUtils.Null>> callback ) {
-        syncCallback( callback, this::asNull );
+    public void asVoid( CloudflareCallback<CloudflareResponse<Void>> callback ) {
+        syncCallback( callback, this::asVoid );
     }
     
     /**
-     * Async method for {@link CloudflareRequest#asNull()}
+     * Async method for {@link CloudflareRequest#asVoid()}
      */
-    public CompletableFuture<CloudflareResponse<ObjectUtils.Null>> asNullAsync( ) {
-        return CompletableFuture.supplyAsync( this::asNull, getCloudflareAccess().getThreadPool() );
+    public CompletableFuture<CloudflareResponse<Void>> asVoidAsync( ) {
+        return CompletableFuture.supplyAsync( this::asVoid, getCloudflareAccess().getThreadPool() );
     }
     
     /**
-     * Same as {@link CloudflareRequest#asNull()}
+     * Same as {@link CloudflareRequest#asVoid()}
      */
-    public CloudflareResponse<ObjectUtils.Null> send( ) {
-        return asNull();
+    public CloudflareResponse<Void> send( ) {
+        return asVoid();
     }
     
     /**
-     * Same as {@link CloudflareRequest#asNull()} but async
+     * Same as {@link CloudflareRequest#asVoid()} but async
      */
-    public CompletableFuture<CloudflareResponse<ObjectUtils.Null>> sendAsync( ) {
-        return asNullAsync();
+    public CompletableFuture<CloudflareResponse<Void>> sendAsync( ) {
+        return asVoidAsync();
     }
     
     /**
-     * Same as {@link CloudflareRequest#asNull()} but with consumer
+     * Same as {@link CloudflareRequest#asVoid()} but with consumer
      */
-    public void send( Consumer<CloudflareResponse<ObjectUtils.Null>> consumer ) {
-        consumer.accept( asNull() );
+    public void send( Consumer<CloudflareResponse<Void>> consumer ) {
+        consumer.accept( asVoid() );
     }
     
     /**
-     * Same as {@link CloudflareRequest#asNull()} but with async callback
+     * Same as {@link CloudflareRequest#asVoid()} but with async callback
      */
-    public void sendAsync( CloudflareCallback<CloudflareResponse<ObjectUtils.Null>> callback ) {
-        asyncCallback( callback, this::asNull );
+    public void sendAsync( CloudflareCallback<CloudflareResponse<Void>> callback ) {
+        asyncCallback( callback, this::asVoid );
     }
     
     /**
-     * Same as {@link CloudflareRequest#asNull()} but with sync callback
+     * Same as {@link CloudflareRequest#asVoid()} but with sync callback
      */
-    public void send( CloudflareCallback<CloudflareResponse<ObjectUtils.Null>> callback ) {
-        syncCallback( callback, this::asNull );
+    public void send( CloudflareCallback<CloudflareResponse<Void>> callback ) {
+        syncCallback( callback, this::asVoid );
     }
     
     /*
@@ -380,14 +477,9 @@ public class CloudflareRequest {
         HttpResponse<String> httpResponse = response().getLeft();
         
         if ( json.get( "result" ).isJsonArray() ) {
-            // Map object from json array to object list.
-            Type listType = new TypeToken<ArrayList<T>>() {
-            }.getType();
-            List<T> objectList = CloudflareAccess.getGson().fromJson( json.getAsJsonArray( "result" ), listType );
-            
             return new CloudflareResponse<>(
                     json,
-                    objectList,
+                    toListOfObjects( json.getAsJsonArray( "result" ), objectType ),
                     httpResponse.isSuccessful(),
                     httpResponse.getStatus(),
                     httpResponse.getStatusText()
@@ -472,10 +564,7 @@ public class CloudflareRequest {
         // Check if result is json array.
         if ( json.get( "result" ).isJsonArray() ) {
             // Map object from json array to object list.
-            Type listType = new TypeToken<ArrayList<T>>() {
-            }.getType();
-            List<T> objectList = CloudflareAccess.getGson().fromJson( json.getAsJsonArray( "result" ), listType );
-            object = (T) objectList;
+            object = (T) toListOfObjects( json.getAsJsonArray( "result" ), objectType );
         } else if ( json.get( "result" ).isJsonObject() )
             // json is a json object and the object is not mapped in a List
             object = CloudflareAccess.getGson().fromJson( json.getAsJsonObject( "result" ), objectType );
@@ -597,11 +686,37 @@ public class CloudflareRequest {
     
     /**
      * INTERNAL HELPER METHOD!
+     * <p>
+     * Parse json array to list of objects.
+     */
+    private <T> List<T> toListOfObjects( JsonArray jsonArray, Class<T> objectType ) {
+        return CloudflareAccess.getGson()
+                .fromJson( jsonArray,
+                        new ParameterizedType() {
+                            @Override
+                            public Type[] getActualTypeArguments( ) {
+                                return new Type[]{objectType};
+                            }
+                            
+                            @Override
+                            public Type getRawType( ) {
+                                return List.class;
+                            }
+                            
+                            @Override
+                            public Type getOwnerType( ) {
+                                return null;
+                            }
+                        } );
+    }
+    
+    /**
+     * INTERNAL HELPER METHOD!
      *
      * @return formatted url containing the passed ordered identifiers replaced with {id-ORDER_NUMBER}
      */
     private String categoryPath( ) {
-        String additionalCategoryPath = additionalPath;
+        String additionalCategoryPath = checkNotNull( additionalPath, ERROR_INVALID_ADDITIONAL_PATH );
         
         // pattern is like 'foo/{id-1}/bar/{id-2}'
         for ( int place = 1; place <= orderedIdentifiers.size(); place++ )

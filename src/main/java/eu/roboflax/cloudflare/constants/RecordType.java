@@ -20,7 +20,7 @@ public enum RecordType {
     CAA( "CertificationAuthorityAuthorization" );
     
     @Getter
-    public final String fullName;
+    private final String fullName;
     
     RecordType( String fullName ) {
         this.fullName = fullName;

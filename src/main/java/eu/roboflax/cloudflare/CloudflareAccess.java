@@ -4,7 +4,6 @@
  */
 package eu.roboflax.cloudflare;
 
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,6 +13,7 @@ import eu.roboflax.cloudflare.objects.zone.ZoneSetting;
 import io.joshworks.restclient.http.RestClient;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NonNull;
 import org.apache.http.client.config.CookieSpecs;
 
 import javax.annotation.Nullable;
@@ -21,6 +21,8 @@ import java.io.Closeable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class CloudflareAccess implements Closeable {
     
@@ -53,7 +55,7 @@ public class CloudflareAccess implements Closeable {
             .registerTypeAdapter( ZoneSetting.class, new ZoneSettingDeserializer() )
             .create();
     
-    public CloudflareAccess( String xAuthKey, String xAuthEmail, @Nullable ExecutorService threadPool ) {
+    public CloudflareAccess( @NonNull String xAuthKey, @NonNull String xAuthEmail, @Nullable ExecutorService threadPool ) {
         this.xAuthKey = xAuthKey;
         this.xAuthEmail = xAuthEmail;
         this.threadPool = threadPool;
@@ -76,7 +78,7 @@ public class CloudflareAccess implements Closeable {
     }
     
     public CloudflareAccess( CloudflareConfig config ) {
-        this( config.getXAuthKey(),
+        this( checkNotNull( config ).getXAuthKey(),
                 config.getXAuthEmail(),
                 config.getThreadPool() != null ?
                         config.getThreadPool() : newDefaultThreadPool(
@@ -84,7 +86,7 @@ public class CloudflareAccess implements Closeable {
     }
     
     public static void setGson( Gson gson ) {
-        CloudflareAccess.gson = Preconditions.checkNotNull( gson );
+        CloudflareAccess.gson = checkNotNull( gson );
     }
     
     public ExecutorService getThreadPool( ) {
@@ -97,7 +99,7 @@ public class CloudflareAccess implements Closeable {
     public void close( long timeout, TimeUnit unit ) {
         getRestClient().close();
         if ( threadPool != null )
-            MoreExecutors.shutdownAndAwaitTermination( threadPool, timeout, unit );
+            MoreExecutors.shutdownAndAwaitTermination( threadPool, timeout, checkNotNull( unit ) );
     }
     
     @Override

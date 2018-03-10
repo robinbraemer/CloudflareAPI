@@ -4,6 +4,7 @@
  */
 package eu.roboflax.cloudflare;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -28,7 +29,7 @@ public class CloudflareResponse<T> {
     private final JsonObject json;
     
     /**
-     * The result parsed as the given type.
+     * The "result" property in the json response parsed as the given type.
      */
     @Getter
     private final T object;
@@ -70,7 +71,7 @@ public class CloudflareResponse<T> {
     private final ResultInfo resultInfo;
     
     CloudflareResponse( JsonObject json, T object, boolean successful, int statusCode, String statusMessage ) {
-        this.messages = null; // todo how is their structure?
+        this.messages = Lists.newArrayList(); // TODO
         this.json = json;
         this.successful = successful;
         this.statusCode = statusCode;

@@ -1,4 +1,4 @@
-# Cloudflare: The Cloudflare - API/Library for Java (UPDATE: NEW CONCEPTS)
+# The Cloudflare - API/Library for Java (UPDATE: NEW CONCEPTS)
 
 [![Travis][travis-img]][travis-url]
 [![JitPack][jitpack-img]][jitpack-url]
@@ -60,6 +60,22 @@ String CF_EMAIL = "your_cloudflare@email.com";
 String CF_API_KEY = "your_cloudflare_api_key";
 
 CloudflareAccess cfAccess = new CloudflareAccess(CF_EMAIL, CF_API_KEY);
+```
+
+Then you can create cloudflare requests
+```java
+new CloudflareRequest( Category.LIST_ZONES, cloudflareAccess )
+        .asObjectList( new CloudflareCallback<CloudflareResponse<List<Zone>>>() {
+            @Override
+            public void onSuccess( CloudflareResponse<List<Zone>> response ) {
+                System.out.println( "Success!" );
+            }
+            
+            @Override
+            public void onFailure( Throwable t, int statusCode, String statusMessage, Map<Integer, String> errors ) {
+                System.out.println( "Failure!" );
+            }
+        }, Zone.class );
 ```
 
 ## Learn more about the Cloudflare - API/Library
