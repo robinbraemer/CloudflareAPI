@@ -9,7 +9,7 @@ This Cloudflare API/Library interacts with [Cloudflare's fast API v4](https://ap
 and allows you to access every single feature _(even if it isn't added yet)_ of Cloudflare's API faster and much easier!
 
 ## Latest release (NEW CONCEPTS)
-**Updating to the newest [v1.3.0][releases-url] (or newer) is highly recommended!**
+**Updating to the newest [v1.3.1][releases-url] (or newer) is highly recommended!**
 
 **IMPORTANT:** _If you update from [v1.2.3](https://github.com/RoboFlax/CloudflareAPI/releases/tag/1.2.3)
 (or older) to a newer version, you probably have to fix and recode the lines where this api is used
@@ -23,7 +23,7 @@ To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the
 <dependency>
   <groupId>com.github.roboflax</groupId>
   <artifactId>cloudflareapi</artifactId>
-  <version>1.3.0</version>
+  <version>1.3.1</version>
 </dependency>
 	
 <repositories>
@@ -37,7 +37,7 @@ To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the
 **Gradle:**
 ```
 dependencies {
-  compile 'com.github.roboflax:cloudflareapi:1.3.0'
+  compile 'com.github.roboflax:cloudflareapi:1.3.1'
 }
 
 allprojects {
