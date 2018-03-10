@@ -65,18 +65,9 @@ CloudflareAccess cfAccess = new CloudflareAccess(CF_EMAIL, CF_API_KEY);
 
 Then you can create cloudflare requests.
 ```java
-new CloudflareRequest( Category.LIST_ZONES, cloudflareAccess )
-        .asObjectList( new CloudflareCallback<CloudflareResponse<List<Zone>>>() {
-            @Override
-            public void onSuccess( CloudflareResponse<List<Zone>> response ) {
-                System.out.println( "Success!" );
-            }
-            
-            @Override
-            public void onFailure( Throwable t, int statusCode, String statusMessage, Map<Integer, String> errors ) {
-                System.out.println( "Failure!" );
-            }
-        }, Zone.class );
+CloudflareResponse<List<Zone>> response =
+    new CloudflareRequest( Category.LIST_ZONES, cfAccess )
+        .asObjectList( Zone.class );
 ```
 
 ## Learn more about the Cloudflare - API/Library
