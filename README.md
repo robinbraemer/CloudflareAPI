@@ -23,7 +23,7 @@ To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the
 <dependency>
   <groupId>com.github.roboflax</groupId>
   <artifactId>cloudflareapi</artifactId>
-  <version>1.3.1</version>
+  <version>1.3.2</version>
 </dependency>
 	
 <repositories>
@@ -37,7 +37,7 @@ To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the
 **Gradle:**
 ```
 dependencies {
-  compile 'com.github.roboflax:cloudflareapi:1.3.1'
+  compile 'com.github.roboflax:cloudflareapi:1.3.2'
 }
 
 allprojects {

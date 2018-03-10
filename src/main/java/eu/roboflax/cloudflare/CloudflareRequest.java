@@ -56,7 +56,6 @@ public class CloudflareRequest {
     
     public static final String ERROR_RESULT_IS_JSON_OBJECT = "Property 'result' is not a json array, because it is a json object use asObject() instead of asObjectList().";
     public static final String ERROR_RESULT_IS_JSON_ARRAY = "Property 'result' is not a json object, because it is a json array use asObjectList() instead of asObject().";
-    public static final String ERROR_RESULT_IS_JSON_NULL = "Something went wrong! Property 'result' is a json null.";
     
     public static final String ERROR_PARSING_JSON = "Could not parse returned text as json.";
     
@@ -64,9 +63,8 @@ public class CloudflareRequest {
      * The http request still was successful. If you used a CloudflareCallback for this request then onFailure will be executed.
      * Otherwise if you have a CloudflareResponse object you can still use .getJson() to retrieve further information.
      */
-    public static final String ERROR_CLOUDFLARE_FAILURE = "Cloudflare itself failed. " +
-            "Cloudflare was unable to perform your request and couldn't determine the result of the requested/passed information. " +
-            "Maybe you built the request wrong?";
+    public static final String ERROR_CLOUDFLARE_FAILURE = "Cloudflare was unable to perform your request and couldn't determine the result of the requested/passed information. " +
+            "Maybe you built the request wrong or something different.";
     
     
     public CloudflareRequest( ) {
@@ -424,7 +422,14 @@ public class CloudflareRequest {
         }
         if ( json.get( "result" ).isJsonArray() )
             throw new IllegalStateException( ERROR_RESULT_IS_JSON_ARRAY );
-        throw new IllegalStateException( ERROR_RESULT_IS_JSON_NULL );
+        
+        return new CloudflareResponse<>(
+                json,
+                null,
+                httpResponse.isSuccessful(),
+                httpResponse.getStatus(),
+                httpResponse.getStatusText()
+        );
     }
     
     /**
@@ -487,7 +492,14 @@ public class CloudflareRequest {
         }
         if ( json.get( "result" ).isJsonObject() )
             throw new IllegalStateException( ERROR_RESULT_IS_JSON_OBJECT );
-        throw new IllegalStateException( ERROR_RESULT_IS_JSON_NULL );
+        
+        return new CloudflareResponse<>(
+                json,
+                null,
+                httpResponse.isSuccessful(),
+                httpResponse.getStatus(),
+                httpResponse.getStatusText()
+        );
     }
     
     /**
@@ -568,7 +580,7 @@ public class CloudflareRequest {
         } else if ( json.get( "result" ).isJsonObject() )
             // json is a json object and the object is not mapped in a List
             object = CloudflareAccess.getGson().fromJson( json.getAsJsonObject( "result" ), objectType );
-        else throw new IllegalStateException( ERROR_RESULT_IS_JSON_NULL );
+        else object = null;
         
         // Return the response
         return new CloudflareResponse<>(
