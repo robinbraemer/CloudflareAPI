@@ -131,7 +131,6 @@
             <groupId>io.joshworks.unirest</groupId>
             <artifactId>unirest-java</artifactId>
             <version>1.5.0</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
