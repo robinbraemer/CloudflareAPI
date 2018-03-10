@@ -12,6 +12,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+/**
+ * @see <a href="https://api.cloudflare.com/#user-billing-history-billing-history">https://api.cloudflare.com</a>
+ */
 @Getter
 @Setter
 public class Billing implements Identifiable {

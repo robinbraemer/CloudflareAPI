@@ -1,11 +1,41 @@
-# Created by .ignore support plugin (hsz.mobi)
-### Example user template template
-### Example user template
+# Eclipse stuff
+/.classpath
+/.project
+/.settings
 
-# IntelliJ project files
-.idea
+# netbeans
+/nbproject
+nb*.xml
+
+# we use maven!
+/build.xml
+
+# maven
+/target
+dependency-reduced-pom.xml
+
+# vim
+.*.sw[a-p]
+
+# various other potential build files
+/build
+/bin
+/dist
+/manifest.mf
+
+/world
+
+# Mac filesystem dust
+.DS_Store
+
+# intellij
 *.iml
-out
-gen
+*.ipr
+*.iws
+.idea/
+
+.flooignore
+.floo
+
+# Private
 /src/test/java/PrivateTests.java
-/target/

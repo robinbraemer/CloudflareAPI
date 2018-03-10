@@ -4,12 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.roboflax.cloudflare</groupId>
-    <artifactId>cloudflare</artifactId>
-    <version>1.2.3</version>
+    <artifactId>cloudflare-java</artifactId>
+    <version>1.3.0</version>
     <packaging>jar</packaging>
     <name>Cloudflare - API/Library</name>
     <description>A Java Cloudflare API/Library.</description>
     <url>https://github.com/RoboFlax/Cloudflare</url>
+
     <licenses>
         <license>
             <name>Apache License 2.0</name>
@@ -17,26 +18,9 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    <issueManagement>
-        <system>GitHub Issues</system>
-        <url>https://github.com/RoboFlax/Cloudflare/issues</url>
-    </issueManagement>
-    <ciManagement>
-        <system>Travis CI</system>
-        <url>https://travis-ci.org/RoboFlax/CloudflareAPI</url>
-    </ciManagement>
-    <inceptionYear>2018</inceptionYear>
-    <prerequisites>
-        <maven>3.0.3</maven>
-    </prerequisites>
-    <scm>
-        <connection>scm:git:https://github.com/RoboFlax/Cloudflare.git</connection>
-        <developerConnection>scm:git:git@github.com:RoboFlax/Cloudflare.git</developerConnection>
-        <url>https://github.com/RoboFlax/Cloudflare</url>
-    </scm>
+
     <developers>
         <developer>
-            <id>RoboFlax</id>
             <name>Robin Brämer</name>
             <email>roboflax@gmail.com</email>
             <roles>
@@ -45,13 +29,36 @@
             </roles>
         </developer>
     </developers>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/RoboFlax/CloudflareAPI/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>Travis CI</system>
+        <url>https://travis-ci.org/RoboFlax/CloudflareAPI</url>
+    </ciManagement>
+
+    <inceptionYear>2018</inceptionYear>
+
+    <prerequisites>
+        <maven>3.0.3</maven>
+    </prerequisites>
+
+    <scm>
+        <connection>scm:git:https://github.com/RoboFlax/CloudflareAPI.git</connection>
+        <developerConnection>scm:git:git@github.com:RoboFlax/CloudflareAPI.git</developerConnection>
+        <url>https://github.com/RoboFlax/CloudflareAPI</url>
+    </scm>
+
     <build>
         <finalName>CloudflareAPI</finalName>
         <defaultGoal>clean install</defaultGoal>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>3.7.0</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -60,6 +67,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.0</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -75,13 +83,28 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -96,18 +119,19 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>23.5-jre</version>
+            <version>24.0-jre</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.18</version>
+            <version>1.16.20</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.joshworks.unirest</groupId>
             <artifactId>unirest-java</artifactId>
             <version>1.5.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

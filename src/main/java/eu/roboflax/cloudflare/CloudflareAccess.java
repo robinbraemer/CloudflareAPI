@@ -4,17 +4,16 @@
  */
 package eu.roboflax.cloudflare;
 
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
-import eu.roboflax.cloudflare.json.GsonMapper;
+import eu.roboflax.cloudflare.configuration.CloudflareConfig;
 import eu.roboflax.cloudflare.json.ZoneSettingDeserializer;
 import eu.roboflax.cloudflare.objects.zone.ZoneSetting;
-import eu.roboflax.cloudflare.service.DNSRecordService;
-import eu.roboflax.cloudflare.service.UserService;
-import eu.roboflax.cloudflare.service.ZoneService;
 import io.joshworks.restclient.http.RestClient;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NonNull;
 import org.apache.http.client.config.CookieSpecs;
 
 import javax.annotation.Nullable;
@@ -23,57 +22,55 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class CloudflareAccess implements Closeable {
     
     @Getter
-    private String xAuthKey;
+    private final String xAuthKey;
     @Getter
-    private String xAuthEmail;
-    @Getter
-    private RestClient httpClient;
+    private final String xAuthEmail;
+    
+    @Getter(AccessLevel.PROTECTED)
+    private final RestClient restClient;
+    
     private ExecutorService threadPool;
     
     
-    private ZoneService zoneService;
-    private UserService userService;
-    private DNSRecordService dnsRecordService;
-    
     public static final String API_BASE_URL = "https://api.cloudflare.com/client/v4/";
     
-    public static final Gson gson = new GsonBuilder()
-            .setPrettyPrinting()
+    private static ExecutorService newDefaultThreadPool( int maxThreads ) {
+        return Executors.newFixedThreadPool( maxThreads );
+    }
+    
+    public static final int DEFAULT_MAX_THREADS = 100;
+    public static final ExecutorService DEFAULT_THREAD_POOL = newDefaultThreadPool( DEFAULT_MAX_THREADS );
+    
+    /**
+     * This gson object is used for parsing results fora CloudflareResponse
+     * Change this gson for own specifications.
+     */
+    @Getter
+    private static Gson gson = new GsonBuilder()
             .registerTypeAdapter( ZoneSetting.class, new ZoneSettingDeserializer() )
             .create();
-    public static final JsonParser jsonParser = new JsonParser();
-    private static final GsonMapper mapper = new GsonMapper();
     
-    /*public static final Pattern X_AUTH_KEY_PATTERN = Pattern.compile( "((?:[a-z][a-z0-9_]*))",
-            Pattern.CASE_INSENSITIVE | Pattern.DOTALL );
-    public static final Pattern X_AUTH_EMAIL_PATTERN = Pattern.compile( "([\\w-+]+(?:\\.[\\w-+]+)*@(?:[\\w-]+\\.)+[a-zA-Z]{2,7})",
-            Pattern.CASE_INSENSITIVE | Pattern.DOTALL );
-    public static final Pattern domainPattern = Pattern.compile( "^([a-zA-Z0-9][\\\\-a-zA-Z0-9]*\\\\.)+[\\\\-a-zA-Z0-9]{2,20}$" );*/
-    
-    public CloudflareAccess( String xAuthKey, String xAuthEmail, @Nullable ExecutorService threadPool ) {
-        /*if ( !(xAuthKey.length() == 37) || !(X_AUTH_KEY_PATTERN.matcher( xAuthKey ).matches()) )
-            throw new IllegalArgumentException( "Format of passed xAuthKey is invalid!" );
-        if ( !X_AUTH_EMAIL_PATTERN.matcher( xAuthEmail ).matches() )
-            throw new IllegalArgumentException( "Format of passed xAuthEmail is invalid!" );*/
+    public CloudflareAccess( @NonNull String xAuthKey, @NonNull String xAuthEmail, @Nullable ExecutorService threadPool ) {
         this.xAuthKey = xAuthKey;
         this.xAuthEmail = xAuthEmail;
         this.threadPool = threadPool;
-        this.httpClient = RestClient.builder()
+        restClient = RestClient.builder()
                 .baseUrl( API_BASE_URL )
                 .defaultHeader( "Content-Type", "application/json" )
                 .defaultHeader( "X-Auth-Key", this.getXAuthKey() )
                 .defaultHeader( "X-Auth-Email", this.getXAuthEmail() )
                 .followRedirect( false )
                 .cookieSpec( CookieSpecs.IGNORE_COOKIES )
-                .objectMapper( mapper )
                 .build();
     }
     
     public CloudflareAccess( String xAuthKey, String xAuthEmail, int maxThreads ) {
-        this( xAuthKey, xAuthEmail, Executors.newFixedThreadPool( maxThreads ) );
+        this( xAuthKey, xAuthEmail, newDefaultThreadPool( maxThreads ) );
     }
     
     public CloudflareAccess( String xAuthKey, String xAuthEmail ) {
@@ -81,53 +78,36 @@ public class CloudflareAccess implements Closeable {
     }
     
     public CloudflareAccess( CloudflareConfig config ) {
-        this( config.getXAuthKey(), config.getXAuthEmail(), config.getThreadPool() );
+        this( checkNotNull( config ).getXAuthKey(),
+                config.getXAuthEmail(),
+                config.getThreadPool() != null ?
+                        config.getThreadPool() : newDefaultThreadPool(
+                        config.getMaxThreads() != null ? config.getMaxThreads() : DEFAULT_MAX_THREADS ) );
+    }
+    
+    public static void setGson( Gson gson ) {
+        CloudflareAccess.gson = checkNotNull( gson );
+    }
+    
+    public boolean isThreadPoolInitialized( ) {
+        return threadPool != null;
     }
     
     public ExecutorService getThreadPool( ) {
-        if ( this.threadPool == null )
-            this.threadPool = Executors.newFixedThreadPool( 30 );
+        if ( !isThreadPoolInitialized() )
+            threadPool = DEFAULT_THREAD_POOL;
         return threadPool;
     }
     
     
-    public ZoneService zoneService( ) {
-        if ( this.zoneService == null )
-            this.zoneService = new ZoneService( this );
-        return this.zoneService;
-    }
-    
-    public UserService userService( ) {
-        if ( this.userService == null )
-            this.userService = new UserService( this );
-        return this.userService;
-    }
-    public DNSRecordService dnsRecordService( ) {
-        if ( this.dnsRecordService == null )
-            this.dnsRecordService = new DNSRecordService( this );
-        return this.dnsRecordService;
-    }
-    
-    
-    public static Gson getGson( ) {
-        return gson;
-    }
-    
-    public static JsonParser getJsonParser( ) {
-        return jsonParser;
-    }
-    
-    public static GsonMapper getMapper( ) {
-        return mapper;
+    public void close( long timeout, TimeUnit unit ) {
+        getRestClient().close();
+        if ( threadPool != null )
+            MoreExecutors.shutdownAndAwaitTermination( threadPool, timeout, checkNotNull( unit ) );
     }
     
     @Override
     public void close( ) {
-        if ( this.threadPool != null )
-            try {
-                this.getThreadPool().awaitTermination( 1L, TimeUnit.SECONDS );
-                this.getThreadPool().shutdownNow();
-            } catch ( InterruptedException ignored ) {
-            }
+        close( 4, TimeUnit.SECONDS );
     }
 }

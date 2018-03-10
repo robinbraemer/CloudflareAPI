@@ -4,7 +4,6 @@
  */
 package eu.roboflax.cloudflare.objects.zone;
 
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import eu.roboflax.cloudflare.objects.Identifiable;
@@ -14,6 +13,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.List;
 
+/**
+ * @see <a href="https://api.cloudflare.com/#zone-properties">https://api.cloudflare.com</a>
+ */
 @Getter
 @Setter
 public class RatePlan implements Identifiable {

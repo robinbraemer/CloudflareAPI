@@ -14,6 +14,9 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * <a href="http://google.com">ttps://api.cloudflare.com/</a>https://api.cloudflare.com/#zone-settings-get-all-zone-settings
+ */
 public class ZoneSettingDeserializer implements JsonDeserializer<ZoneSetting> {
     
     @Override

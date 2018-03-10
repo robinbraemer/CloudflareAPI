@@ -4,10 +4,15 @@
  */
 package eu.roboflax.cloudflare.constants;
 
-import io.joshworks.restclient.http.HttpMethod;
+import eu.roboflax.cloudflare.CloudflareAccess;
+import eu.roboflax.cloudflare.http.HttpMethod;
 
-import static io.joshworks.restclient.http.HttpMethod.*;
+import static eu.roboflax.cloudflare.http.HttpMethod.*;
 
+/**
+ * Every request that can be made on api.cloudflare.com.
+ * @version March 1st, 2018
+ */
 public enum Category {
     
     // User (The currently logged in/authenticated User)
@@ -370,19 +375,23 @@ public enum Category {
     LIST_USER_AUDIT_LOGS( GET, "user/audit_logs" ),
     LIST_ORGANIZATION_AUDIT_LOGS( GET, "organizations/audit_logs" );
     
-    HttpMethod httpMethod;
-    String path;
+    private HttpMethod httpMethod;
+    private String additionalPath;
     
-    Category( HttpMethod httpMethod, String path ) {
+    Category( HttpMethod httpMethod, String additionalPath ) {
         this.httpMethod = httpMethod;
-        this.path = path;
+        this.additionalPath = additionalPath;
     }
     
     public HttpMethod getHttpMethod( ) {
-        return this.httpMethod;
+        return httpMethod;
+    }
+    
+    public String getAdditionalPath( ) {
+        return additionalPath;
     }
     
     public String getPath( ) {
-        return this.path;
+        return CloudflareAccess.API_BASE_URL + additionalPath;
     }
 }

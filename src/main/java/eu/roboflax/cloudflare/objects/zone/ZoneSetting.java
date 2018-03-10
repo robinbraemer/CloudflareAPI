@@ -13,6 +13,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Map;
 
+/**
+ * @see <a href="https://api.cloudflare.com/#zone-properties">https://api.cloudflare.com</a>
+ */
 @Getter
 @Setter
 public class ZoneSetting implements Identifiable {
