@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
     <name>Cloudflare - API/Library</name>
     <description>A Java Cloudflare API/Library.</description>
-    <url>https://github.com/RoboFlax/Cloudflare</url>
+    <url>https://github.com/robinbraemer/Cloudflare</url>
 
     <licenses>
         <license>
@@ -32,12 +32,12 @@
 
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>https://github.com/RoboFlax/CloudflareAPI/issues</url>
+        <url>https://github.com/robinbraemer/CloudflareAPI/issues</url>
     </issueManagement>
 
     <ciManagement>
         <system>Travis CI</system>
-        <url>https://travis-ci.org/RoboFlax/CloudflareAPI</url>
+        <url>https://travis-ci.org/robinbraemer/CloudflareAPI</url>
     </ciManagement>
 
     <inceptionYear>2018</inceptionYear>
@@ -47,9 +47,9 @@
     </prerequisites>
 
     <scm>
-        <connection>scm:git:https://github.com/RoboFlax/CloudflareAPI.git</connection>
-        <developerConnection>scm:git:git@github.com:RoboFlax/CloudflareAPI.git</developerConnection>
-        <url>https://github.com/RoboFlax/CloudflareAPI</url>
+        <connection>scm:git:https://github.com/robinbraemer/CloudflareAPI.git</connection>
+        <developerConnection>scm:git:git@github.com:robinbraemer/CloudflareAPI.git</developerConnection>
+        <url>https://github.com/robinbraemer/CloudflareAPI</url>
     </scm>
 
     <build>

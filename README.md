@@ -11,7 +11,7 @@ and allows you to access every single feature _(even if it isn't added yet)_ of 
 ## Latest release (NEW CONCEPTS)
 **Updating to the newest [v1.3.1][releases-url] (or newer) is highly recommended!**
 
-**IMPORTANT:** _If you update from [v1.2.3](https://github.com/RoboFlax/CloudflareAPI/releases/tag/1.2.3)
+**IMPORTANT:** _If you update from [v1.2.3](https://github.com/robinbraemer/CloudflareAPI/releases/tag/1.2.3)
 (or older) to a newer version, you probably have to fix and recode the lines where this api is used
 due to massive changes._
 
@@ -21,7 +21,7 @@ To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the
 **Maven:**
 ```xml
 <dependency>
-  <groupId>com.github.roboflax</groupId>
+  <groupId>com.github.robinbraemer</groupId>
   <artifactId>cloudflareapi</artifactId>
   <version>1.3.2</version>
 </dependency>
@@ -37,7 +37,7 @@ To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the
 **Gradle:**
 ```
 dependencies {
-  compile 'com.github.roboflax:cloudflareapi:1.3.2'
+  compile 'com.github.robinbraemer:cloudflareapi:1.3.2'
 }
 
 allprojects {
@@ -83,18 +83,17 @@ Licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for detai
 
 
 
-[releases-url]: https://github.com/RoboFlax/CloudflareAPI/releases
-[wiki-url]: https://github.com/RoboFlax/CloudflareAPI/wiki
+[releases-url]: https://github.com/robinbraemer/CloudflareAPI/releases
+[wiki-url]: https://github.com/robinbraemer/CloudflareAPI/wiki
 
+[travis-url]: https://travis-ci.org/robinbraemer/CloudflareAPI
+[travis-img]: https://travis-ci.org/robinbraemer/CloudflareAPI.svg?branch=master
 
-[travis-url]: https://travis-ci.org/RoboFlax/CloudflareAPI
-[travis-img]: https://travis-ci.org/RoboFlax/CloudflareAPI.svg?branch=master
-
-[jitpack-url]: https://jitpack.io/#RoboFlax/CloudflareAPI
-[jitpack-img]: https://jitpack.io/v/RoboFlax/CloudflareAPI.svg
+[jitpack-url]: https://jitpack.io/#robinbraemer/CloudflareAPI
+[jitpack-img]: https://jitpack.io/v/robinbraemer/CloudflareAPI.svg
 
 [gitter-url]: https://gitter.im/CloudflareAPI/Lobby
 [gitter-img]: https://badges.gitter.im/Join%20Chat.svg
 
-[license-url]: https://github.com/RoboFlax/CloudflareAPI/blob/master/LICENSE
+[license-url]: https://github.com/robinbraemer/CloudflareAPI/blob/master/LICENSE
 [license-img]: https://img.shields.io/badge/license-Apache_2.0-blue.svg?style=flat
