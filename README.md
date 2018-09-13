@@ -57,10 +57,10 @@ allprojects {
 ## Getting Started
 First, create an entry-point to use this api.
 ```java
-String CF_EMAIL = "your_cloudflare@email.com";
 String CF_API_KEY = "your_cloudflare_api_key";
+String CF_EMAIL = "your_cloudflare@email.com";
 
-CloudflareAccess cfAccess = new CloudflareAccess(CF_EMAIL, CF_API_KEY);
+CloudflareAccess cfAccess = new CloudflareAccess(CF_API_KEY, CF_EMAIL);
 ```
 
 Then you can create cloudflare requests.
