@@ -1,4 +1,4 @@
-# The Cloudflare - API/Library for Java (NEW CONCEPTS)
+# The Cloudflare - API/Library for Java
 
 [![Travis][travis-img]][travis-url]
 [![JitPack][jitpack-img]][jitpack-url]
@@ -7,14 +7,6 @@
 
 This Cloudflare API/Library interacts with [Cloudflare's fast API v4](https://api.cloudflare.com/)
 and allows you to access every single feature _(even if it isn't added yet)_ of Cloudflare's API faster and much easier!
-
-## Latest release (NEW CONCEPTS)
-**Updating to the newest [v1.3.1][releases-url] (or newer) is highly recommended!**
-
-**IMPORTANT:** _If you update from [v1.2.3](https://github.com/robinbraemer/CloudflareAPI/releases/tag/1.2.3)
-(or older) to a newer version, you probably have to fix and recode the lines where this api is used
-due to massive changes._
-
 
 To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the following:
 
