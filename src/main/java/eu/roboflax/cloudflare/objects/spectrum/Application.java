@@ -7,14 +7,18 @@ import eu.roboflax.cloudflare.objects.Identifiable;
 
 import java.util.List;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @see <a href="https://api.cloudflare.com/#spectrum-applications-list-spectrum-applications">https://api.cloudflare.com</a>
  */
 @Getter
 @Setter
+@ToString
+@EqualsAndHashCode
 public class Application implements Identifiable {
 
   @SerializedName("id")
