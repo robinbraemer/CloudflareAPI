@@ -373,8 +373,15 @@ public enum Category {
     
     // Audit Logs (A log of changes made to your Cloudflare account)
     LIST_USER_AUDIT_LOGS( GET, "user/audit_logs" ),
-    LIST_ORGANIZATION_AUDIT_LOGS( GET, "organizations/audit_logs" );
-    
+    LIST_ORGANIZATION_AUDIT_LOGS( GET, "organizations/audit_logs" ),
+
+    // Spectrum Applications
+    CREATE_SPECTRUM_APPLICATION( POST, "zones/{id-1}/spectrum/apps" ),
+    LIST_SPECTRUM_APPLICATIONS( GET, "zones/{id-1}/spectrum/apps" ),
+    SPECTRUM_APPLICATION_DETAILS( GET, "zones/{id-1}/spectrum/apps/{id-2}" ),
+    UPDATE_SPECTRUM_APPLICATION( PUT, "zones/{id-1}/spectrum/apps/{id-2}" ),
+    DELETE_SPECTRUM_APPLICATION( DELETE, "zones/{id-1}/spectrum/apps/{id-2}" );
+
     private HttpMethod httpMethod;
     private String additionalPath;
     
