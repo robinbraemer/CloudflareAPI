@@ -80,9 +80,11 @@ public class CloudflareResponse<T> {
         // Errors
         errors = Maps.newHashMap();
         JsonObject o;
-        for ( JsonElement e : getJson().getAsJsonArray( "errors" ) ) {
+        if(getJson().has( "errors" )) {
+          for ( JsonElement e : getJson().getAsJsonArray( "errors" ) ) {
             o = e.getAsJsonObject();
             errors.put( o.get( "code" ).getAsInt(), o.get( "message" ).getAsString() );
+          }
         }
         
         // Pagination infos

@@ -56,19 +56,23 @@ public class CloudflareAccess implements Closeable {
             .create();
     
     public CloudflareAccess( @NonNull String xAuthKey, @NonNull String xAuthEmail, @Nullable ExecutorService threadPool ) {
+        this(xAuthKey, xAuthEmail, threadPool, API_BASE_URL);
+    }
+
+    public CloudflareAccess( @NonNull String xAuthKey, @NonNull String xAuthEmail, @Nullable ExecutorService threadPool, String apiBaseUrl ) {
         this.xAuthKey = xAuthKey;
         this.xAuthEmail = xAuthEmail;
         this.threadPool = threadPool;
         restClient = RestClient.builder()
-                .baseUrl( API_BASE_URL )
-                .defaultHeader( "Content-Type", "application/json" )
-                .defaultHeader( "X-Auth-Key", this.getXAuthKey() )
-                .defaultHeader( "X-Auth-Email", this.getXAuthEmail() )
-                .followRedirect( false )
-                .cookieSpec( CookieSpecs.IGNORE_COOKIES )
-                .build();
+            .baseUrl( apiBaseUrl )
+            .defaultHeader( "Content-Type", "application/json" )
+            .defaultHeader( "X-Auth-Key", this.getXAuthKey() )
+            .defaultHeader( "X-Auth-Email", this.getXAuthEmail() )
+            .followRedirect( false )
+            .cookieSpec( CookieSpecs.IGNORE_COOKIES )
+            .build();
     }
-    
+
     public CloudflareAccess( String xAuthKey, String xAuthEmail, int maxThreads ) {
         this( xAuthKey, xAuthEmail, newDefaultThreadPool( maxThreads ) );
     }
