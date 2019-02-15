@@ -380,7 +380,20 @@ public enum Category {
     LIST_SPECTRUM_APPLICATIONS( GET, "zones/{id-1}/spectrum/apps" ),
     SPECTRUM_APPLICATION_DETAILS( GET, "zones/{id-1}/spectrum/apps/{id-2}" ),
     UPDATE_SPECTRUM_APPLICATION( PUT, "zones/{id-1}/spectrum/apps/{id-2}" ),
-    DELETE_SPECTRUM_APPLICATION( DELETE, "zones/{id-1}/spectrum/apps/{id-2}" );
+    DELETE_SPECTRUM_APPLICATION( DELETE, "zones/{id-1}/spectrum/apps/{id-2}" ),
+
+    // Worker Script
+    UPLOAD_WORKER_SCRIPT( PUT, "accounts/{id-1}/workers/scripts/{id-2}" ),
+    LIST_WORKER_SCRIPTS( GET, "accounts/{id-1}/workers/scripts" ),
+    DOWNLOAD_WORKER_SCRIPT( GET, "accounts/{id-1}/workers/scripts/{id-2}" ),
+    DELETE_WORKER_SCRIPT( DELETE, "accounts/{id-1}/workers/scripts/{id-2}" ),
+
+    // Worker Route
+    CREATE_WORKER_ROUTE( POST, "zones/{id-1}/workers/routes" ),
+    LIST_WORKER_ROUTES( GET, "zones/{id-1}/workers/routes" ),
+    GET_WORKER_ROUTE( GET, "zones/{id-1}/workers/routes/{id-2}" ),
+    UPDATE_WORKER_ROUTE( PUT, "zones/{id-1}/workers/routes/{id-2}" ),
+    DELETE_WORKER_ROUTE( DELETE, "zones/{id-1}/workers/routes/{id-2}" );
 
     private HttpMethod httpMethod;
     private String additionalPath;
