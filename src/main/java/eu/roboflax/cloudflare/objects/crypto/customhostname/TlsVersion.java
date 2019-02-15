@@ -1,4 +1,4 @@
-package eu.roboflax.cloudflare.objects.crypto.customHostname;
+package eu.roboflax.cloudflare.objects.crypto.customhostname;
 
 import com.google.gson.annotations.SerializedName;
 
