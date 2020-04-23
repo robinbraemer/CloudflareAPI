@@ -1,8 +1,9 @@
 # The Cloudflare - API/Library for Java
 
-[![Travis][travis-img]][travis-url]
+[![Jitpack-Month][jitpack-month-img]][jitpack-url]
 [![JitPack][jitpack-img]][jitpack-url]
-[![Gitter][gitter-img]][gitter-url]
+[![Travis][travis-img]][travis-url]
+<!-- [![Gitter][gitter-img]][gitter-url] -->
 [![License][license-img]][license-url]
 
 This Cloudflare API/Library interacts with [Cloudflare's fast API v4](https://api.cloudflare.com/)
@@ -83,6 +84,7 @@ Licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for detai
 
 [jitpack-url]: https://jitpack.io/#robinbraemer/CloudflareAPI
 [jitpack-img]: https://jitpack.io/v/robinbraemer/CloudflareAPI.svg
+[jitpack-month-img]: https://jitpack.io/v/robinbraemer/CloudflareAPI/month.svg
 
 [gitter-url]: https://gitter.im/CloudflareAPI/Lobby
 [gitter-img]: https://badges.gitter.im/Join%20Chat.svg
