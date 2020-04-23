@@ -3,8 +3,8 @@
 [![Jitpack-Month][jitpack-month-img]][jitpack-url]
 [![JitPack][jitpack-img]][jitpack-url]
 [![Travis][travis-img]][travis-url]
-<!-- [![Gitter][gitter-img]][gitter-url] -->
 [![License][license-img]][license-url]
+<!-- [![Gitter][gitter-img]][gitter-url] -->
 
 This Cloudflare API/Library interacts with [Cloudflare's fast API v4](https://api.cloudflare.com/)
 and allows you to access every single feature _(even if it isn't added yet)_ of Cloudflare's API faster and much easier!
