@@ -9,6 +9,8 @@ addons:
       - oracle-java8-installer
 jdk:
   - oraclejdk8
+  
+dist: trusty
 
 cache:
   directories:
