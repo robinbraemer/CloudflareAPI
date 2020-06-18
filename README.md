@@ -16,7 +16,7 @@ To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the
 <dependency>
   <groupId>com.github.robinbraemer</groupId>
   <artifactId>cloudflareapi</artifactId>
-  <version>1.3.2</version>
+  <version>1.3.3</version>
 </dependency>
 	
 <repositories>
@@ -30,7 +30,7 @@ To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the
 **Gradle:**
 ```
 dependencies {
-  compile 'com.github.robinbraemer:cloudflareapi:1.3.2'
+  compile 'com.github.robinbraemer:cloudflareapi:1.3.3'
 }
 
 allprojects {
