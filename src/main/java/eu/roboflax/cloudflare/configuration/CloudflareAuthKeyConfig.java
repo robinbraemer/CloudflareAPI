@@ -15,7 +15,7 @@ import java.util.concurrent.ExecutorService;
  */
 @Getter
 @Setter
-public class CloudflareConfig {
+public class CloudflareAuthKeyConfig {
     
     private String xAuthKey;
     private String xAuthEmail;
@@ -23,17 +23,17 @@ public class CloudflareConfig {
     private ExecutorService threadPool;
     private Integer maxThreads;
     
-    public CloudflareConfig( String xAuthKey, String xAuthEmail ) {
+    public CloudflareAuthKeyConfig(String xAuthKey, String xAuthEmail ) {
         this.xAuthKey = xAuthKey;
         this.xAuthEmail = xAuthEmail;
     }
     
-    public CloudflareConfig( String xAuthKey, String xAuthEmail, @Nullable Integer maxThreads ) {
+    public CloudflareAuthKeyConfig(String xAuthKey, String xAuthEmail, @Nullable Integer maxThreads ) {
         this( xAuthKey, xAuthEmail );
         this.maxThreads = maxThreads;
     }
     
-    public CloudflareConfig( String xAuthKey, String xAuthEmail, @Nullable ExecutorService threadPool ) {
+    public CloudflareAuthKeyConfig(String xAuthKey, String xAuthEmail, @Nullable ExecutorService threadPool ) {
         this( xAuthKey, xAuthEmail );
         this.threadPool = threadPool;
     }
