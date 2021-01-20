@@ -46,6 +46,7 @@ allprojects {
 - **parsing results as objects (object oriented representation)**
 - **it is an extremely flexible api**
 - **asynchronicity support**
+- **cloudflare api token support**
 
 ## Getting Started
 First, create an entry-point to use this api.
@@ -55,6 +56,13 @@ String CF_EMAIL = "your_cloudflare@email.com";
 
 CloudflareAccess cfAccess = new CloudflareAccess(CF_API_KEY, CF_EMAIL);
 ```
+For API tokens use:
+```java
+String CF_API_TOKEN = "your_cloudflare_api_key";
+
+CloudflareAccess cfAccess = new CloudflareAccess(CF_API_TOKEN);
+```
+
 
 Then you can create cloudflare requests.
 ```java
