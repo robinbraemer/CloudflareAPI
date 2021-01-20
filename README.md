@@ -16,7 +16,7 @@ To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the
 <dependency>
   <groupId>com.github.robinbraemer</groupId>
   <artifactId>cloudflareapi</artifactId>
-  <version>1.3.3</version>
+  <version>1.4.0</version>
 </dependency>
 	
 <repositories>
@@ -30,7 +30,7 @@ To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the
 **Gradle:**
 ```
 dependencies {
-  compile 'com.github.robinbraemer:cloudflareapi:1.3.3'
+  compile 'com.github.robinbraemer:cloudflareapi:1.4.0'
 }
 
 allprojects {
@@ -46,23 +46,21 @@ allprojects {
 - **parsing results as objects (object oriented representation)**
 - **it is an extremely flexible api**
 - **asynchronicity support**
-- **cloudflare api token support**
+- **token & key+email authentication support**
 
 ## Getting Started
-First, create an entry-point to use this api.
+First, you define the access object.
 ```java
-String CF_API_KEY = "your_cloudflare_api_key";
-String CF_EMAIL = "your_cloudflare@email.com";
-
-CloudflareAccess cfAccess = new CloudflareAccess(CF_API_KEY, CF_EMAIL);
-```
-For API tokens use:
-```java
-String CF_API_TOKEN = "your_cloudflare_api_key";
-
+String CF_API_TOKEN = "your_cloudflare_api_token";
 CloudflareAccess cfAccess = new CloudflareAccess(CF_API_TOKEN);
 ```
 
+Or use key+email authentication:
+```java
+String CF_API_KEY = "your_cloudflare_api_key";
+String CF_EMAIL = "your_cloudflare@email.com";
+CloudflareAccess cfAccess = new CloudflareAccess(CF_API_KEY, CF_EMAIL);
+```
 
 Then you can create cloudflare requests.
 ```java
@@ -71,7 +69,7 @@ CloudflareResponse<List<Zone>> response =
         .asObjectList( Zone.class );
 ```
 
-## Learn more about the Cloudflare - API/Library
+## Learn more about the Cloudflare - client library
 
 - Check out our users' guide in the wiki, [Cloudflare - API/Library explained][wiki-url].
 - There is a lot to discover about this api/library.
