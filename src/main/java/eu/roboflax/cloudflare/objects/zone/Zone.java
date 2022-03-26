@@ -59,7 +59,7 @@ public class Zone implements Identifiable {
     @SerializedName("plan_pending")
     @Expose
     private PlanPending planPending;
-    @SerializedName("Status")
+    @SerializedName("status")
     @Expose
     private String status;
     @SerializedName("paused")
