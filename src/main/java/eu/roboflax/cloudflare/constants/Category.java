@@ -308,14 +308,14 @@ public enum Category {
     CREATE_VIRTUAL_USER_DNS_CLUSTER( POST, "user/virtual_dns" ),
     VIRTUAL_USER_DNS_CLUSTER_DETAILS( GET, "user/virtual_dns/{id-1}" ),
     DELETE_VIRTUAL_USER_DNS_CLUSTER( DELETE, "user/virtual_dns/{id-1}" ),
-    MODIFY_VIRTUAL_USER_DNS_CLIUSTER( PATCH, "user/virtual_dns/{id-1}" ),
+    MODIFY_VIRTUAL_USER_DNS_CLUSTER( PATCH, "user/virtual_dns/{id-1}" ),
     
     // Virtual DNS (Organizations) (Organization-level Virtual DNS Management)
     LIST_VIRTUAL_ORGANIZATION_DNS_CLUSTER( GET, "organizations/{id-1}/virtual_dns" ),
     CREATE_VIRTUAL_ORGANIZATION_DNS_CLUSTER( POST, "organizations/{id-1}/virtual_dns/{id-2}" ),
     VIRTUAL_ORGANIZATION_DNS_CLUSTER_DETAILS( GET, "organizations/{id-1}/virtual_dns/{id-2}" ),
     DELETE_VIRTUAL_ORGANIZATION_DNS_CLUSTER( DELETE, "organizations/{id-1}/virtual_dns/{id-2}" ),
-    MODIFY_VIRTUAL_ORGANIZATION_DNS_CLIUSTER( PATCH, "organizations/{id-1}/virtual_dns/{id-2}" ),
+    MODIFY_VIRTUAL_ORGANIZATION_DNS_CLUSTER( PATCH, "organizations/{id-1}/virtual_dns/{id-2}" ),
     
     // Virtual DNS Analytics (Users) (Analytics data for a Virtual DNS cluster.)
     VIRTUAL_USER_DNS_ANALYTICS_TABLE( GET, "user/virtual_dns/{id-1}/dns_analytics/report" ),
