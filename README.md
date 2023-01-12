@@ -16,7 +16,7 @@ To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the
 <dependency>
   <groupId>com.github.robinbraemer</groupId>
   <artifactId>cloudflareapi</artifactId>
-  <version><COMMIT_SHA></version>
+  <version>GIT_COMMIT_SHA</version>
 </dependency>
 	
 <repositories>
@@ -30,7 +30,7 @@ To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the
 **Gradle:**
 ```
 dependencies {
-  compile 'com.github.robinbraemer:cloudflareapi:<COMMIT_SHA>'
+  compile 'com.github.robinbraemer:cloudflareapi:<GIT_COMMIT_SHA>'
 }
 
 allprojects {
