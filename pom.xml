@@ -52,10 +52,45 @@
         <url>https://github.com/robinbraemer/CloudflareAPI</url>
     </scm>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <lombok.version>1.18.30</lombok.version>
+        <ossrh.url>https://s01.oss.sonatype.org</ossrh.url>
+    </properties>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <name>Sonatype OSS Snapshots Repository</name>
+            <url>${ossrh.url}/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <name>Sonatype OSS Release Staging Repository</name>
+            <url>${ossrh.url}/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <finalName>CloudflareAPI</finalName>
         <defaultGoal>clean install</defaultGoal>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.0-M7</version>
+                <configuration>
+                    <scmCommentPrefix>[ci skip]</scmCommentPrefix>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <releaseProfiles>releases</releaseProfiles>
+                </configuration>
+            </plugin>
+	    <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
@@ -63,6 +98,13 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <encoding>UTF-8</encoding>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
@@ -99,6 +141,106 @@
         </plugins>
     </build>
 
+  <profiles>
+    <profile>
+      <id>doclint-java8-disable</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.4.1</version>
+            <configuration>
+	      <source>8</source>
+              <additionalparam>-Xdoclint:none</additionalparam>
+	      <detectJavaApiLink>false</detectJavaApiLink>
+	    </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>releases</id>
+      <build>
+        <plugins>
+	  <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-source-plugin</artifactId>
+	    <version>3.2.1</version>
+	    <executions>
+              <execution>
+		<id>attach-sources</id>
+		<goals>
+		  <goal>jar-no-fork</goal>
+		</goals>
+              </execution>
+	    </executions>
+	  </plugin>
+	  <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-javadoc-plugin</artifactId>
+	    <version>3.4.1</version>
+	    <executions>
+              <execution>
+		<id>attach-javadocs</id>
+		<goals>
+		  <goal>jar</goal>
+		</goals>
+              </execution>
+	    </executions>
+	  </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>3.0.1</version>
+	    <configuration>
+	      <gpgArguments>
+		<arg>--pinentry-mode</arg>
+		<arg>loopback</arg>
+	      </gpgArguments>
+	    </configuration>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+                <configuration>
+                  <skip>${release.sign.skip}</skip>
+                </configuration>
+              </execution>
+            </executions>
+	  </plugin>
+	  <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <extensions>true</extensions>
+            <version>1.6.13</version>
+            <executions>
+              <execution>
+                <id>default-deploy</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>deploy</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+	      <serverId>ossrh</serverId>
+	      <nexusUrl>${ossrh.url}/</nexusUrl>
+	      <autoReleaseAfterClose>true</autoReleaseAfterClose>
+	      <!-- <autoDropAfterRelease>true</autoDropAfterRelease> -->
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -124,7 +266,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.26</version>
+            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
