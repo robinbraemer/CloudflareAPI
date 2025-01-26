@@ -25,8 +25,7 @@ public class Configuration {
     private String value;
     
     @Override
-    public String toString( ) {
-        return new ToStringBuilder( this ).append( "target", target ).append( "value", value ).toString();
+    public String toString() {
+        return new ToStringBuilder(this).append("target", target).append("value", value).toString();
     }
-    
 }

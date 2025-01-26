@@ -52,8 +52,7 @@ public class Invite implements Identifiable {
     private String status;
     
     @Override
-    public String toString( ) {
-        return new ToStringBuilder( this ).append( "id", id ).append( "invitedMemberId", invitedMemberId ).append( "invitedMemberEmail", invitedMemberEmail ).append( "organizationId", organizationId ).append( "organizationName", organizationName ).append( "roles", roles ).append( "invitedBy", invitedBy ).append( "invitedOn", invitedOn ).append( "expiresOn", expiresOn ).append( "Status", status ).toString();
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("invitedMemberId", invitedMemberId).append("invitedMemberEmail", invitedMemberEmail).append("organizationId", organizationId).append("organizationName", organizationName).append("roles", roles).append("invitedBy", invitedBy).append("invitedOn", invitedOn).append("expiresOn", expiresOn).append("Status", status).toString();
     }
-    
 }

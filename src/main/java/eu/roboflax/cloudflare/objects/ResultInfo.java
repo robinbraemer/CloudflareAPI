@@ -27,11 +27,11 @@ public class ResultInfo {
     public Integer totalCount;
     
     @Override
-    public String toString( ) {
-        return new ToStringBuilder( this )
-                .append( "page", page )
-                .append( "perPage", perPage )
-                .append( "count", count )
-                .append( "totalCount", totalCount ).toString();
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("page", page)
+                .append("perPage", perPage)
+                .append("count", count)
+                .append("totalCount", totalCount).toString();
     }
 }

@@ -29,7 +29,7 @@ public class Scope implements Identifiable {
     private String type;
     
     @Override
-    public String toString( ) {
-        return new ToStringBuilder( this ).append( "id", id ).append( "email", email ).append( "type", type ).toString();
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("email", email).append("type", type).toString();
     }
 }

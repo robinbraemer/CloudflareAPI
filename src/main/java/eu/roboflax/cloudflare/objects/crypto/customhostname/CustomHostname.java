@@ -2,11 +2,8 @@ package eu.roboflax.cloudflare.objects.crypto.customhostname;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
 import eu.roboflax.cloudflare.objects.Identifiable;
-
 import java.util.Map;
-
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

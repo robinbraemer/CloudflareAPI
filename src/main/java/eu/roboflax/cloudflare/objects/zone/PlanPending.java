@@ -45,7 +45,15 @@ public class PlanPending implements Identifiable {
     
     @Override
     public String toString( ) {
-        return new ToStringBuilder( this ).append( "id", id ).append( "name", name ).append( "price", price ).append( "currency", currency ).append( "Frequency", frequency ).append( "legacyId", legacyId ).append( "isSubscribed", isSubscribed ).append( "canSubscribe", canSubscribe ).toString();
+        return new ToStringBuilder( this )
+            .append( "id", id )
+            .append( "name", name )
+            .append( "price", price )
+            .append( "currency", currency )
+            .append( "Frequency", frequency )
+            .append( "legacyId", legacyId )
+            .append( "isSubscribed", isSubscribed )
+            .append( "canSubscribe", canSubscribe )
+            .toString();
     }
-    
 }

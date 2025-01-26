@@ -36,9 +36,7 @@ public class ZoneSetting implements Identifiable {
     private Map<String, String> additional;
     
     @Override
-    public String toString( ) {
-        return new ToStringBuilder( this ).append( "id", id ).append( "modifiedOn", modifiedOn ).append( "editable", editable ).append( "value", value ).append( "additional", additional ).toString();
-        
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("modifiedOn", modifiedOn).append("editable", editable).append("value", value).append("additional", additional).toString();
     }
-    
 }

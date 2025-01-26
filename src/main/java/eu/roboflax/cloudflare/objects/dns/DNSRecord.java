@@ -58,20 +58,20 @@ public class DNSRecord implements Identifiable {
     private Meta meta;
     
     @Override
-    public String toString( ) {
-        return new ToStringBuilder( this )
-                .append( "id", id )
-                .append( "type", type )
-                .append( "name", name )
-                .append( "content", content )
-                .append( "proxiable", proxiable )
-                .append( "proxied", proxied )
-                .append( "ttl", ttl )
-                .append( "locked", locked )
-                .append( "zoneId", zoneId )
-                .append( "zoneName", zoneName )
-                .append( "modifiedOn", modifiedOn )
-                .append( "createdOn", createdOn )
-                .append( "meta", meta ).toString();
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("type", type)
+                .append("name", name)
+                .append("content", content)
+                .append("proxiable", proxiable)
+                .append("proxied", proxied)
+                .append("ttl", ttl)
+                .append("locked", locked)
+                .append("zoneId", zoneId)
+                .append("zoneName", zoneName)
+                .append("modifiedOn", modifiedOn)
+                .append("createdOn", createdOn)
+                .append("meta", meta).toString();
     }
 }

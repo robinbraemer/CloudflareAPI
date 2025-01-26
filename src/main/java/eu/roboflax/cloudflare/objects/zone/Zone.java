@@ -70,8 +70,7 @@ public class Zone implements Identifiable {
     private String type;
     
     @Override
-    public String toString( ) {
-        return new ToStringBuilder( this ).append( "id", id ).append( "name", name ).append( "developmentMode", developmentMode ).append( "originalNameServers", originalNameServers ).append( "originalRegistrar", originalRegistrar ).append( "originalDnshost", originalDnshost ).append( "createdOn", createdOn ).append( "modifiedOn", modifiedOn ).append( "nameServers", nameServers ).append( "owner", owner ).append( "permissions", permissions ).append( "plan", plan ).append( "planPending", planPending ).append( "Status", status ).append( "paused", paused ).append( "type", type ).toString();
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("name", name).append("developmentMode", developmentMode).append("originalNameServers", originalNameServers).append("originalRegistrar", originalRegistrar).append("originalDnshost", originalDnshost).append("createdOn", createdOn).append("modifiedOn", modifiedOn).append("nameServers", nameServers).append("owner", owner).append("permissions", permissions).append("plan", plan).append("planPending", planPending).append("Status", status).append("paused", paused).append("type", type).toString();
     }
-    
 }

@@ -395,8 +395,8 @@ public enum Category {
     UPDATE_WORKER_ROUTE( PUT, "zones/{id-1}/workers/routes/{id-2}" ),
     DELETE_WORKER_ROUTE( DELETE, "zones/{id-1}/workers/routes/{id-2}" );
 
-    private HttpMethod httpMethod;
-    private String additionalPath;
+    private final HttpMethod httpMethod;
+    private final String additionalPath;
     
     Category( HttpMethod httpMethod, String additionalPath ) {
         this.httpMethod = httpMethod;

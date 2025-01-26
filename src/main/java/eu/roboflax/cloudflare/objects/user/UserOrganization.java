@@ -37,8 +37,13 @@ public class UserOrganization implements Identifiable {
     private List<String> roles = null;
     
     @Override
-    public String toString( ) {
-        return new ToStringBuilder( this ).append( "id", id ).append( "name", name ).append( "Status", status ).append( "permissions", permissions ).append( "roles", roles ).toString();
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", id)
+            .append("name", name)
+            .append("Status", status)
+            .append("permissions", permissions)
+            .append("roles", roles)
+            .toString();
     }
-    
 }

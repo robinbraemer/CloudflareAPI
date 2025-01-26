@@ -46,8 +46,7 @@ public class AccessRule implements Identifiable {
     private String modifiedOn;
     
     @Override
-    public String toString( ) {
-        return new ToStringBuilder( this ).append( "id", id ).append( "notes", notes ).append( "allowedModes", allowedModes ).append( "Mode", mode ).append( "configuration", configuration ).append( "scope", scope ).append( "createdOn", createdOn ).append( "modifiedOn", modifiedOn ).toString();
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("notes", notes).append("allowedModes", allowedModes).append("Mode", mode).append("configuration", configuration).append("scope", scope).append("createdOn", createdOn).append("modifiedOn", modifiedOn).toString();
     }
-    
 }

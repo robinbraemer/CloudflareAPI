@@ -6,5 +6,4 @@ package eu.roboflax.cloudflare.constants;
 
 public enum Match {
     ALL, ANY
-    
 }

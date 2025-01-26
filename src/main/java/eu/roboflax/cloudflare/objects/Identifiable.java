@@ -9,5 +9,5 @@ package eu.roboflax.cloudflare.objects;
  */
 public interface Identifiable {
     
-    String getId( );
+    String getId();
 }

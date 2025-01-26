@@ -21,10 +21,9 @@ public class Meta {
     private Boolean managedByApps;
     
     @Override
-    public String toString( ) {
-        return new ToStringBuilder( this )
-                .append( "autoAdded", autoAdded )
-                .append( "managedByApps", managedByApps ).toString();
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("autoAdded", autoAdded)
+                .append("managedByApps", managedByApps).toString();
     }
-    
 }

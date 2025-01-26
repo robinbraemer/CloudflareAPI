@@ -29,8 +29,7 @@ public class Owner implements Identifiable {
     private String ownerType;
     
     @Override
-    public String toString( ) {
-        return new ToStringBuilder( this ).append( "id", id ).append( "email", email ).append( "ownerType", ownerType ).toString();
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("email", email).append("ownerType", ownerType).toString();
     }
-    
 }

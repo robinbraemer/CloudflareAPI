@@ -132,7 +132,6 @@ public class CloudflareAccess implements Closeable {
         return threadPool;
     }
 
-
     public void close( long timeout, TimeUnit unit ) {
         getRestClient().close();
         if ( threadPool != null )

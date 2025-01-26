@@ -63,9 +63,9 @@ public class CloudflareRequest {
      * The http request still was successful. If you used a CloudflareCallback for this request then onFailure will be executed.
      * Otherwise if you have a CloudflareResponse object you can still use .getJson() to retrieve further information.
      */
-    public static final String ERROR_CLOUDFLARE_FAILURE = "Cloudflare was unable to perform your request and couldn't determine the result of the requested/passed information. " +
-            "Maybe you built the request wrong or something different.";
-    
+    public static final String ERROR_CLOUDFLARE_FAILURE = """
+            Cloudflare was unable to perform your request and couldn't determine the result of the requested/passed information. \
+            Maybe you built the request wrong or something different.""";
     
     public CloudflareRequest( ) {
     }
@@ -248,45 +248,39 @@ public class CloudflareRequest {
     }
     
     private HttpResponse<String> sendRequest( ) {
-        switch ( checkNotNull( httpMethod, ERROR_INVALID_HTTP_METHOD ) ) {
-            case GET:
-                return cloudflareAccess.getRestClient()
-                        .get( categoryPath() )
-                        .queryString( queryStrings )
-                        .asString();
-            case POST:
-                return cloudflareAccess.getRestClient()
-                        .post( categoryPath() )
-                        .queryString( queryStrings )
-                        .body( body.toString() )
-                        .asString();
-            case DELETE:
-                return cloudflareAccess.getRestClient()
-                        .delete( categoryPath() )
-                        .queryString( queryStrings )
-                        .body( body.toString() )
-                        .asString();
-            case PUT:
-                return cloudflareAccess.getRestClient()
-                        .put( categoryPath() )
-                        .queryString( queryStrings )
-                        .body( body.toString() )
-                        .asString();
-            case PATCH:
-                return cloudflareAccess.getRestClient()
-                        .patch( categoryPath() )
-                        .queryString( queryStrings )
-                        .body( body.toString() )
-                        .asString();
-            default:
-                throw new IllegalStateException( "Should never happen because other http methods are blocked." );
-        }
+        return switch (checkNotNull(httpMethod, ERROR_INVALID_HTTP_METHOD)) {
+            case GET -> cloudflareAccess.getRestClient()
+                    .get(categoryPath())
+                    .queryString(queryStrings)
+                    .asString();
+            case POST -> cloudflareAccess.getRestClient()
+                    .post(categoryPath())
+                    .queryString(queryStrings)
+                    .body(body.toString())
+                    .asString();
+            case DELETE -> cloudflareAccess.getRestClient()
+                    .delete(categoryPath())
+                    .queryString(queryStrings)
+                    .body(body.toString())
+                    .asString();
+            case PUT -> cloudflareAccess.getRestClient()
+                    .put(categoryPath())
+                    .queryString(queryStrings)
+                    .body(body.toString())
+                    .asString();
+            case PATCH -> cloudflareAccess.getRestClient()
+                    .patch(categoryPath())
+                    .queryString(queryStrings)
+                    .body(body.toString())
+                    .asString();
+            default -> throw new IllegalStateException("Should never happen because other http methods are blocked.");
+        };
     }
     
     private Pair<HttpResponse<String>, JsonObject> response( ) {
         if ( response == null ) {
             HttpResponse<String> httpResponse = sendRequest();
-            JsonElement parsed = new JsonParser().parse( httpResponse.getBody() );
+            JsonElement parsed = new JsonParser().parse( httpResponse.body() );
             // Check if parsing was successful, gson returns json null if failed
             if ( parsed.isJsonNull() )
                 throw new IllegalStateException( ERROR_PARSING_JSON );

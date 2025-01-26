@@ -53,8 +53,19 @@ public class UserDetails implements Identifiable {
     private Boolean twoFactorAuthenticationEnabled;
     
     @Override
-    public String toString( ) {
-        return new ToStringBuilder( this ).append( "id", id ).append( "email", email ).append( "firstName", firstName ).append( "lastName", lastName ).append( "username", username ).append( "telephone", telephone ).append( "country", country ).append( "zipCode", zipCode ).append( "createdOn", createdOn ).append( "modifiedOn", modifiedOn ).append( "twoFactorAuthenticationEnabled", twoFactorAuthenticationEnabled ).toString();
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("email", email)
+                .append("firstName", firstName)
+                .append("lastName", lastName)
+                .append("username", username)
+                .append("telephone", telephone)
+                .append("country", country)
+                .append("zipCode", zipCode)
+                .append("createdOn", createdOn)
+                .append("modifiedOn", modifiedOn)
+                .append("twoFactorAuthenticationEnabled", twoFactorAuthenticationEnabled)
+                .toString();
     }
-    
 }

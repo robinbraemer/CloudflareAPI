@@ -71,7 +71,7 @@ public class BillingProfile implements Identifiable {
     private String createdOn;
     
     @Override
-    public String toString( ) {
-        return new ToStringBuilder( this ).append( "id", id ).append( "firstName", firstName ).append( "lastName", lastName ).append( "address", address ).append( "address2", address2 ).append( "company", company ).append( "city", city ).append( "state", state ).append( "zipCode", zipcode ).append( "country", country ).append( "telephone", telephone ).append( "cardNumber", cardNumber ).append( "cardExpiryYear", cardExpiryYear ).append( "cardExpiryMonth", cardExpiryMonth ).append( "vat", vat ).append( "editedOn", editedOn ).append( "createdOn", createdOn ).toString();
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("firstName", firstName).append("lastName", lastName).append("address", address).append("address2", address2).append("company", company).append("city", city).append("state", state).append("zipCode", zipcode).append("country", country).append("telephone", telephone).append("cardNumber", cardNumber).append("cardExpiryYear", cardExpiryYear).append("cardExpiryMonth", cardExpiryMonth).append("vat", vat).append("editedOn", editedOn).append("createdOn", createdOn).toString();
     }
 }

@@ -53,8 +53,7 @@ public class Subscription implements Identifiable {
     private String currentPeriodStart;
     
     @Override
-    public String toString( ) {
-        return new ToStringBuilder( this ).append( "id", id ).append( "state", state ).append( "price", price ).append( "currency", currency ).append( "componentValues", componentValues ).append( "zone", zone ).append( "Frequency", frequency ).append( "ratePlan", ratePlan ).append( "currentPeriodEnd", currentPeriodEnd ).append( "currentPeriodStart", currentPeriodStart ).toString();
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("state", state).append("price", price).append("currency", currency).append("componentValues", componentValues).append("zone", zone).append("Frequency", frequency).append("ratePlan", ratePlan).append("currentPeriodEnd", currentPeriodEnd).append("currentPeriodStart", currentPeriodStart).toString();
     }
-    
 }

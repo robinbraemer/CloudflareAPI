@@ -40,8 +40,7 @@ public class RatePlan implements Identifiable {
     private List<Component> components = null;
     
     @Override
-    public String toString( ) {
-        return new ToStringBuilder( this ).append( "id", id ).append( "name", name ).append( "currency", currency ).append( "duration", duration ).append( "Frequency", frequency ).append( "components", components ).toString();
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("name", name).append("currency", currency).append("duration", duration).append("Frequency", frequency).append("components", components).toString();
     }
-    
 }

@@ -35,8 +35,7 @@ public class RatePlan implements Identifiable {
     private Boolean externallyManaged;
     
     @Override
-    public String toString( ) {
-        return new ToStringBuilder( this ).append( "id", id ).append( "publicName", publicName ).append( "currency", currency ).append( "scope", scope ).append( "externallyManaged", externallyManaged ).toString();
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("publicName", publicName).append("currency", currency).append("scope", scope).append("externallyManaged", externallyManaged).toString();
     }
-    
 }
