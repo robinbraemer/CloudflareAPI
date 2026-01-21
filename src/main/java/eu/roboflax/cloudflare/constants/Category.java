@@ -393,10 +393,39 @@ public enum Category {
     LIST_WORKER_ROUTES( GET, "zones/{id-1}/workers/routes" ),
     GET_WORKER_ROUTE( GET, "zones/{id-1}/workers/routes/{id-2}" ),
     UPDATE_WORKER_ROUTE( PUT, "zones/{id-1}/workers/routes/{id-2}" ),
-    DELETE_WORKER_ROUTE( DELETE, "zones/{id-1}/workers/routes/{id-2}" );
+    DELETE_WORKER_ROUTE( DELETE, "zones/{id-1}/workers/routes/{id-2}" ),
 
-    private HttpMethod httpMethod;
-    private String additionalPath;
+    // Cloudflare Tunnel (Zero Trust)
+    LIST_TUNNELS( GET, "accounts/{id-1}/cfd_tunnel" ),
+    CREATE_TUNNEL( POST, "accounts/{id-1}/cfd_tunnel" ),
+    TUNNEL_DETAILS( GET, "accounts/{id-1}/cfd_tunnel/{id-2}" ),
+    UPDATE_TUNNEL( PATCH, "accounts/{id-1}/cfd_tunnel/{id-2}" ),
+    DELETE_TUNNEL( DELETE, "accounts/{id-1}/cfd_tunnel/{id-2}" ),
+    GET_TUNNEL_CONFIGURATION( GET, "accounts/{id-1}/cfd_tunnel/{id-2}/configurations" ),
+    UPDATE_TUNNEL_CONFIGURATION( PUT, "accounts/{id-1}/cfd_tunnel/{id-2}/configurations" ),
+    GET_TUNNEL_TOKEN( GET, "accounts/{id-1}/cfd_tunnel/{id-2}/token" ),
+    LIST_TUNNEL_CONNECTIONS( GET, "accounts/{id-1}/cfd_tunnel/{id-2}/connections" ),
+    DELETE_TUNNEL_CONNECTIONS( DELETE, "accounts/{id-1}/cfd_tunnel/{id-2}/connections" ),
+
+    // Access Service Tokens (Zero Trust)
+    LIST_ACCESS_SERVICE_TOKENS( GET, "accounts/{id-1}/access/service_tokens" ),
+    CREATE_ACCESS_SERVICE_TOKEN( POST, "accounts/{id-1}/access/service_tokens" ),
+    ACCESS_SERVICE_TOKEN_DETAILS( GET, "accounts/{id-1}/access/service_tokens/{id-2}" ),
+    UPDATE_ACCESS_SERVICE_TOKEN( PUT, "accounts/{id-1}/access/service_tokens/{id-2}" ),
+    DELETE_ACCESS_SERVICE_TOKEN( DELETE, "accounts/{id-1}/access/service_tokens/{id-2}" ),
+    REFRESH_ACCESS_SERVICE_TOKEN( POST, "accounts/{id-1}/access/service_tokens/{id-2}/refresh" ),
+    ROTATE_ACCESS_SERVICE_TOKEN( POST, "accounts/{id-1}/access/service_tokens/{id-2}/rotate" ),
+
+    // Access Applications (Zero Trust)
+    LIST_ACCESS_APPLICATIONS( GET, "accounts/{id-1}/access/apps" ),
+    CREATE_ACCESS_APPLICATION( POST, "accounts/{id-1}/access/apps" ),
+    ACCESS_APPLICATION_DETAILS( GET, "accounts/{id-1}/access/apps/{id-2}" ),
+    UPDATE_ACCESS_APPLICATION( PUT, "accounts/{id-1}/access/apps/{id-2}" ),
+    DELETE_ACCESS_APPLICATION( DELETE, "accounts/{id-1}/access/apps/{id-2}" ),
+    REVOKE_ACCESS_APPLICATION_TOKENS( POST, "accounts/{id-1}/access/apps/{id-2}/revoke_tokens" );
+
+    private final HttpMethod httpMethod;
+    private final String additionalPath;
     
     Category( HttpMethod httpMethod, String additionalPath ) {
         this.httpMethod = httpMethod;
