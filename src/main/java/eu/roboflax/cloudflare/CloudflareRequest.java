@@ -286,7 +286,7 @@ public class CloudflareRequest {
     private Pair<HttpResponse<String>, JsonObject> response( ) {
         if ( response == null ) {
             HttpResponse<String> httpResponse = sendRequest();
-            JsonElement parsed = new JsonParser().parse( httpResponse.getBody() );
+            JsonElement parsed = new JsonParser().parse( httpResponse.body() );
             // Check if parsing was successful, gson returns json null if failed
             if ( parsed.isJsonNull() )
                 throw new IllegalStateException( ERROR_PARSING_JSON );

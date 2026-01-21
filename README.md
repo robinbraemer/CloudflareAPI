@@ -2,23 +2,41 @@
 
 [![Jitpack-Month][jitpack-month-img]][jitpack-url]
 [![JitPack][jitpack-img]][jitpack-url]
-[![Travis][travis-img]][travis-url]
+[![CI][ci-img]][ci-url]
 [![License][license-img]][license-url]
 <!-- [![Gitter][gitter-img]][gitter-url] -->
 
 This Cloudflare API/Library interacts with [Cloudflare's fast API v4](https://api.cloudflare.com/)
 and allows you to access every single feature _(even if it isn't added yet)_ of Cloudflare's API faster and much easier!
 
-To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the following:
+## Installation
+
+### Maven Central (Recommended)
+
+**Maven:**
+```xml
+<dependency>
+  <groupId>io.github.robinbraemer</groupId>
+  <artifactId>cloudflare-api</artifactId>
+  <version>1.5.0</version>
+</dependency>
+```
+
+**Gradle:**
+```groovy
+implementation 'io.github.robinbraemer:cloudflare-api:1.5.0'
+```
+
+### JitPack (Alternative)
 
 **Maven:**
 ```xml
 <dependency>
   <groupId>com.github.robinbraemer</groupId>
-  <artifactId>cloudflareapi</artifactId>
-  <version>GIT_COMMIT_SHA</version>
+  <artifactId>CloudflareAPI</artifactId>
+  <version>master-SNAPSHOT</version>
 </dependency>
-	
+
 <repositories>
   <repository>
     <id>jitpack.io</id>
@@ -28,15 +46,13 @@ To add a dependency on this Cloudflare-API/Library using Maven or Gradle use the
 ```
 
 **Gradle:**
-```
-dependencies {
-  compile 'com.github.robinbraemer:cloudflareapi:<GIT_COMMIT_SHA>'
+```groovy
+repositories {
+    maven { url 'https://jitpack.io' }
 }
 
-allprojects {
-  repositories {
-    maven { url 'https://jitpack.io' }
-  }
+dependencies {
+    implementation 'com.github.robinbraemer:CloudflareAPI:master-SNAPSHOT'
 }
 ```
 
@@ -85,8 +101,8 @@ Licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for detai
 [releases-url]: https://github.com/robinbraemer/CloudflareAPI/releases
 [wiki-url]: https://github.com/robinbraemer/CloudflareAPI/wiki
 
-[travis-url]: https://travis-ci.org/robinbraemer/CloudflareAPI
-[travis-img]: https://travis-ci.org/robinbraemer/CloudflareAPI.svg?branch=master
+[ci-url]: https://github.com/robinbraemer/CloudflareAPI/actions
+[ci-img]: https://github.com/robinbraemer/CloudflareAPI/actions/workflows/ci.yml/badge.svg
 
 [jitpack-url]: https://jitpack.io/#robinbraemer/CloudflareAPI
 [jitpack-img]: https://jitpack.io/v/robinbraemer/CloudflareAPI.svg
